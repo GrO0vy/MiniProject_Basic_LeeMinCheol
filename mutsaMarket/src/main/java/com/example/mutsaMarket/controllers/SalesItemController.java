@@ -1,7 +1,7 @@
 package com.example.mutsaMarket.controllers;
 
-import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.dao.SalesItemDao;
+import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.SalesItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,8 @@ public class SalesItemController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{itemId}")
-    public
+    @GetMapping({"/{itemId}"})
+    public SalesItemDao readOne(@PathVariable("itemId") Integer itemId){
+        return service.readItemById(itemId);
+    }
 }
