@@ -14,7 +14,7 @@ public class SalesItemEntity {
     private String description;
     private String imageUrl;
     private Integer minPriceWanted;
-    private String status;
+    private String status = "판매중";
     private String writer;
     private String password;
 }

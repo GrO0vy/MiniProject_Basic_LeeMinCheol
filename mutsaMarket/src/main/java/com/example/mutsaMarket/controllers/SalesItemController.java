@@ -20,4 +20,7 @@ public class SalesItemController {
         response.setMessage("등록이 완료되었습니다");
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/{itemId}")
+    public
 }
