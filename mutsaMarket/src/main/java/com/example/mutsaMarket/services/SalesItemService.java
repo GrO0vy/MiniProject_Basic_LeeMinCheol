@@ -1,9 +1,12 @@
 package com.example.mutsaMarket.services;
 
-import com.example.mutsaMarket.dao.SalesItemDao;
+import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.entity.SalesItemEntity;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +18,7 @@ import java.util.Optional;
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
 
-    public SalesItemDao registerItem(SalesItemDao salesItemDao){
+    public SalesItemDto registerItem(SalesItemDto salesItemDao){
         SalesItemEntity salesItemEntity = new SalesItemEntity();
 
         salesItemEntity.setTitle(salesItemDao.getTitle());
@@ -26,15 +29,24 @@ public class SalesItemService {
 
         salesItemEntity = salesItemRepository.save(salesItemEntity);
 
-        return SalesItemDao.fromEntity(salesItemEntity);
+        return SalesItemDto.fromEntity(salesItemEntity);
     }
 
-    public SalesItemDao readItemById(Integer itemId){
+    public Page<SalesItemDto> readItemAll(Integer pageNumber, Integer pageSize){
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Page<SalesItemEntity> salesItemEntityPage = salesItemRepository.findAll(pageable);
+        Page<SalesItemDto> salesItemDtoPage = salesItemEntityPage.map(SalesItemDto::fromEntity);
+
+        return salesItemDtoPage;
+
+    }
+    public SalesItemDto readItemById(Integer itemId){
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
         if(optionalEntity.isPresent()){
             SalesItemEntity entity = optionalEntity.get();
-            return SalesItemDao.fromEntity(entity);
+            return SalesItemDto.fromEntity(entity);
         }
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }

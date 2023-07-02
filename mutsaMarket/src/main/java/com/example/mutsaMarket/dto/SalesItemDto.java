@@ -1,10 +1,10 @@
-package com.example.mutsaMarket.dao;
+package com.example.mutsaMarket.dto;
 
 import com.example.mutsaMarket.entity.SalesItemEntity;
 import lombok.Data;
 
 @Data
-public class SalesItemDao {
+public class SalesItemDto {
     private Integer id;
     private String title;
     private String description;
@@ -14,8 +14,8 @@ public class SalesItemDao {
     private String writer;
     private String password;
 
-    public static SalesItemDao fromEntity(SalesItemEntity entity){
-        SalesItemDao salesItemDao = new SalesItemDao();
+    public static SalesItemDto fromEntity(SalesItemEntity entity){
+        SalesItemDto salesItemDao = new SalesItemDto();
         salesItemDao.setId(entity.getId());
         salesItemDao.setTitle(entity.getTitle());
         salesItemDao.setDescription(entity.getDescription());
