@@ -6,8 +6,12 @@ import com.example.mutsaMarket.services.SalesItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.print.attribute.standard.Media;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +46,17 @@ public class SalesItemController {
         service.updateItem(itemId, salesItemDto);
         ResponseObject response = new ResponseObject();
         response.setMessage("물품이 수정되었습니다");
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping(value = "/{itemId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity updateImage(@PathVariable("itemId") Integer itemId,
+                                      @RequestBody MultipartFile image){
+
+        service.updateItemImage(itemId, image);
+        ResponseObject response = new ResponseObject();
+        response.setMessage("물품이 수정되었습니다.");
 
         return ResponseEntity.ok().body(response);
     }

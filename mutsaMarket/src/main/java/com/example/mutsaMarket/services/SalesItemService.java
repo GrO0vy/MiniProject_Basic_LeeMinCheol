@@ -4,17 +4,22 @@ import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.entity.SalesItemEntity;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
 
@@ -68,5 +73,39 @@ public class SalesItemService {
             return SalesItemDto.fromEntity(salesItemEntity);
         }
         else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    public SalesItemDto updateItemImage(Integer itemId, MultipartFile image){
+        Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
+
+        if(!optionalEntity.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        String imageDir = String.format("images/%d",itemId);
+        try{
+            Files.createDirectories(Path.of(imageDir));
+        }catch (Exception e){
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String originalFilename = image.getOriginalFilename();
+        String extension = originalFilename.substring(originalFilename.indexOf(".")+1);
+        String imageFileName = "image." + extension;
+
+        String fullPath = String.format("%s/%s",imageDir,imageFileName);
+
+        try{
+            image.transferTo(Path.of(fullPath));
+        }catch (Exception e){
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        SalesItemEntity salesItemEntity = optionalEntity.get();
+        salesItemEntity.setImageUrl(String.format("static/%d/%s",itemId,imageFileName));
+
+        salesItemEntity = salesItemRepository.save(salesItemEntity);
+
+        return SalesItemDto.fromEntity(salesItemEntity);
     }
 }
