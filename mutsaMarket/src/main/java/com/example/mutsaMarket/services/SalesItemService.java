@@ -59,26 +59,34 @@ public class SalesItemService {
     public SalesItemDto updateItem(Integer itemId, SalesItemDto salesItemDto){
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
-        if(optionalEntity.isPresent()){
-            SalesItemEntity salesItemEntity = optionalEntity.get();
+        if(!optionalEntity.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-            salesItemEntity.setTitle(salesItemDto.getTitle());
-            salesItemEntity.setDescription(salesItemDto.getDescription());
-            salesItemEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
-            salesItemEntity.setWriter(salesItemDto.getWriter());
-            salesItemEntity.setPassword(salesItemDto.getPassword());
+        if(!isValidPassword(optionalEntity,salesItemDto.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-            salesItemEntity = salesItemRepository.save(salesItemEntity);
+        SalesItemEntity salesItemEntity = optionalEntity.get();
 
-            return SalesItemDto.fromEntity(salesItemEntity);
-        }
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        salesItemEntity.setTitle(salesItemDto.getTitle());
+        salesItemEntity.setDescription(salesItemDto.getDescription());
+        salesItemEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
+        salesItemEntity.setWriter(salesItemDto.getWriter());
+        salesItemEntity.setPassword(salesItemDto.getPassword());
+
+        salesItemEntity = salesItemRepository.save(salesItemEntity);
+
+        return SalesItemDto.fromEntity(salesItemEntity);
     }
 
-    public SalesItemDto updateItemImage(Integer itemId, MultipartFile image){
+    public SalesItemDto updateItemImage(Integer itemId, MultipartFile image, String writer, String password){
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
-        if(!optionalEntity.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if(!optionalEntity.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        if(!isValidPassword(optionalEntity,password))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
 
         String imageDir = String.format("itemImages/%d",itemId);
         try{
@@ -109,12 +117,19 @@ public class SalesItemService {
         return SalesItemDto.fromEntity(salesItemEntity);
     }
 
-    public void deleteItem(Integer itemId){
+    public void deleteItem(Integer itemId, SalesItemDto salesItemDto){
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
-        if(optionalEntity.isPresent()){
-            salesItemRepository.delete(optionalEntity.get());
-        }
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if(!optionalEntity.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        if(!isValidPassword(optionalEntity,salesItemDto.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        salesItemRepository.delete(optionalEntity.get());
+    }
+
+    public boolean isValidPassword(Optional<SalesItemEntity> optionalEntity, String password){
+        return optionalEntity.get().getPassword().equals(password);
     }
 }

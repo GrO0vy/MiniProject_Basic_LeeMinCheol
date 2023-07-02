@@ -52,9 +52,12 @@ public class SalesItemController {
 
     @PutMapping(value = "/{itemId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity updateImage(@PathVariable("itemId") Integer itemId,
-                                      @RequestBody MultipartFile image){
+                                      @RequestParam("image") MultipartFile image,
+                                      @RequestParam("writer") String writer,
+                                      @RequestParam("password") String password
+                                      ){
 
-        service.updateItemImage(itemId, image);
+        service.updateItemImage(itemId, image,writer,password);
         ResponseObject response = new ResponseObject();
         response.setMessage("물품이 수정되었습니다.");
 
@@ -62,9 +65,9 @@ public class SalesItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity delete(@PathVariable("itemId") Integer itemId){
+    public ResponseEntity delete(@PathVariable("itemId") Integer itemId, @RequestBody SalesItemDto salesItemDto){
 
-        service.deleteItem(itemId);
+        service.deleteItem(itemId, salesItemDto);
         ResponseObject response = new ResponseObject();
         response.setMessage("물품을 삭제했습니다.");
         return ResponseEntity.ok().body(response);
