@@ -80,7 +80,7 @@ public class SalesItemService {
 
         if(!optionalEntity.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        String imageDir = String.format("images/%d",itemId);
+        String imageDir = String.format("itemImages/%d",itemId);
         try{
             Files.createDirectories(Path.of(imageDir));
         }catch (Exception e){
@@ -107,5 +107,14 @@ public class SalesItemService {
         salesItemEntity = salesItemRepository.save(salesItemEntity);
 
         return SalesItemDto.fromEntity(salesItemEntity);
+    }
+
+    public void deleteItem(Integer itemId){
+        Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
+
+        if(optionalEntity.isPresent()){
+            salesItemRepository.delete(optionalEntity.get());
+        }
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

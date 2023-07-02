@@ -60,4 +60,13 @@ public class SalesItemController {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity delete(@PathVariable("itemId") Integer itemId){
+
+        service.deleteItem(itemId);
+        ResponseObject response = new ResponseObject();
+        response.setMessage("물품을 삭제했습니다.");
+        return ResponseEntity.ok().body(response);
+    }
 }
