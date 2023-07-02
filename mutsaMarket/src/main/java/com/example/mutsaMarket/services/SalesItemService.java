@@ -50,4 +50,23 @@ public class SalesItemService {
         }
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+    public SalesItemDto updateItem(Integer itemId, SalesItemDto salesItemDto){
+        Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
+
+        if(optionalEntity.isPresent()){
+            SalesItemEntity salesItemEntity = optionalEntity.get();
+
+            salesItemEntity.setTitle(salesItemDto.getTitle());
+            salesItemEntity.setDescription(salesItemDto.getDescription());
+            salesItemEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
+            salesItemEntity.setWriter(salesItemDto.getWriter());
+            salesItemEntity.setPassword(salesItemDto.getPassword());
+
+            salesItemEntity = salesItemRepository.save(salesItemEntity);
+
+            return SalesItemDto.fromEntity(salesItemEntity);
+        }
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
 }

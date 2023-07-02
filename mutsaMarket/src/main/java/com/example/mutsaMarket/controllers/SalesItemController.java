@@ -5,6 +5,7 @@ import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.SalesItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +34,15 @@ public class SalesItemController {
     @GetMapping({"/{itemId}"})
     public SalesItemDto readOne(@PathVariable("itemId") Integer itemId){
         return service.readItemById(itemId);
+    }
+
+    @PutMapping("/{itemId}")
+    public ResponseEntity update(@PathVariable("itemId") Integer itemId, @RequestBody SalesItemDto salesItemDto){
+
+        service.updateItem(itemId, salesItemDto);
+        ResponseObject response = new ResponseObject();
+        response.setMessage("물품이 수정되었습니다");
+
+        return ResponseEntity.ok().body(response);
     }
 }
