@@ -1,9 +1,11 @@
 package com.example.mutsaMarket.dto;
 
 import com.example.mutsaMarket.entity.CommentEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
     private int id;
     private int itemId;

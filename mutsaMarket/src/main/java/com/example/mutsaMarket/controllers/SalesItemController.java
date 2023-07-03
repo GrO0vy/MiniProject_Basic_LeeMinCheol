@@ -32,7 +32,7 @@ public class SalesItemController {
 
     @GetMapping
     public Page<SalesItemDto> readAll(@RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                                      @RequestParam(value = "limit", defaultValue = "10") Integer pageSize
+                                      @RequestParam(value = "size", defaultValue = "10") Integer pageSize
                                       )
     {
         return service.readItemAll(pageNumber, pageSize);

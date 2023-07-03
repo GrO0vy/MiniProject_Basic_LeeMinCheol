@@ -6,6 +6,7 @@ import com.example.mutsaMarket.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,26 @@ public class CommentController {
     }
 
     @GetMapping
+    public Page<CommentDto> readOne(@PathVariable("itemId") Integer itemId,
+                                    @RequestParam("page") Integer pageNumber,
+                                    @RequestParam("size") Integer pageSize)
+    {
+        return service.readCommentAll(itemId,pageNumber,pageSize);
+    }
 
+    @PutMapping("/{commentId}")
+    public ResponseEntity update(@PathVariable("itemId") Integer itemId,
+                              @PathVariable("commentId") Integer commentId,
+                              @RequestBody CommentDto commentDto)
+    {
+
+        service.updateComment(itemId, commentId, commentDto);
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("댓글이 수정되었습니다.");
+
+        return ResponseEntity.ok(response);
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity dataIntegrityViolationError(DataIntegrityViolationException exception){
