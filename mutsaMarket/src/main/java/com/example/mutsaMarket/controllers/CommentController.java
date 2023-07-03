@@ -52,6 +52,19 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity delete(@PathVariable("itemId") Integer itemId,
+                                 @PathVariable("commentId") Integer commentId,
+                                 @RequestBody CommentDto commentDto)
+    {
+        service.deleteComment(itemId, commentId, commentDto);
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("댓글을 삭제했습니다.");
+
+        return ResponseEntity.ok(response);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity dataIntegrityViolationError(DataIntegrityViolationException exception){
         log.error("모든 항목을 입력하지 않음");

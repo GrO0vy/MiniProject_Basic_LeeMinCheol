@@ -4,6 +4,7 @@ import com.example.mutsaMarket.dto.CommentDto;
 import com.example.mutsaMarket.entity.CommentEntity;
 import com.example.mutsaMarket.repositories.CommentRepository;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,5 +64,22 @@ public class CommentService {
         entity = commentRepository.save(entity);
 
         return CommentDto.fromEntity(entity);
+    }
+
+    public void deleteComment(Integer itemId, Integer commentId, CommentDto commentDto){
+        if(!salesItemRepository.existsById(itemId))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        Optional<CommentEntity> optionalEntity = commentRepository.findById(commentId);
+
+        if(!optionalEntity.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        CommentEntity entity = optionalEntity.get();
+
+        if(!entity.getPassword().equals(commentDto.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        commentRepository.delete(entity);
     }
 }
