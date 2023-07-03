@@ -1,10 +1,14 @@
 package com.example.mutsaMarket.services;
 
+import com.example.mutsaMarket.dto.CommentDto;
 import com.example.mutsaMarket.dto.SalesItemDto;
+import com.example.mutsaMarket.entity.CommentEntity;
 import com.example.mutsaMarket.entity.SalesItemEntity;
+import com.example.mutsaMarket.repositories.CommentRepository;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.LifecycleState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
+    private final CommentRepository commentRepository;
 
     public SalesItemDto registerItem(SalesItemDto salesItemDao){
         SalesItemEntity salesItemEntity = new SalesItemEntity();
@@ -134,6 +141,13 @@ public class SalesItemService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         salesItemRepository.delete(optionalEntity.get());
+//        List<CommentEntity> commentEntityList = commentRepository.findAllByItemId(itemId);
+//
+//        for(var commentEntity : commentEntityList){
+//            commentRepository.delete(commentEntity);
+//        }
+
+        commentRepository.deleteAllByItemId(itemId);
     }
 
     public boolean isValidPassword(Optional<SalesItemEntity> optionalEntity, String password){

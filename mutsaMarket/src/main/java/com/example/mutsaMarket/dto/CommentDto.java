@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
-    private int id;
-    private int itemId;
+    private Integer id;
+    private Integer itemId;
     private String writer;
     private String password;
     private String content;
