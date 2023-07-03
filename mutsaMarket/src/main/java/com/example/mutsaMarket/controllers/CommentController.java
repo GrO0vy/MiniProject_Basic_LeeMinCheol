@@ -43,11 +43,10 @@ public class CommentController {
                               @PathVariable("commentId") Integer commentId,
                               @RequestBody CommentDto commentDto)
     {
-
-        service.updateComment(itemId, commentId, commentDto);
+        String message = service.updateComment(itemId, commentId, commentDto);
 
         ResponseObject response = new ResponseObject();
-        response.setMessage("댓글이 수정되었습니다.");
+        response.setMessage(message);
 
         return ResponseEntity.ok(response);
     }

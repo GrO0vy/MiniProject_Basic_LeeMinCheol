@@ -2,6 +2,7 @@ package com.example.mutsaMarket.services;
 
 import com.example.mutsaMarket.dto.CommentDto;
 import com.example.mutsaMarket.entity.CommentEntity;
+import com.example.mutsaMarket.entity.SalesItemEntity;
 import com.example.mutsaMarket.repositories.CommentRepository;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -44,7 +45,7 @@ public class CommentService {
         return commentDtoPage;
     }
 
-    public CommentDto updateComment(Integer itemId, Integer commentId, CommentDto commentDto){
+    public String updateComment(Integer itemId, Integer commentId, CommentDto commentDto){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
@@ -53,17 +54,27 @@ public class CommentService {
         if(!optionalEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        CommentEntity entity = optionalEntity.get();
+        CommentEntity commentEntity = optionalEntity.get();
+        SalesItemEntity salesItemEntity = salesItemRepository.findById(itemId).get();
+        String message;
 
-        if(!entity.getPassword().equals(commentDto.getPassword()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if(salesItemEntity.getWriter().equals(commentDto.getWriter())){
+            if(!salesItemEntity.getPassword().equals(commentDto.getPassword()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            commentEntity.setReply(commentDto.getReply());
+            message = "댓글에 답글이 추가되었습니다.";
+        }
 
-        entity.setWriter(commentDto.getWriter());
-        entity.setContent(commentDto.getContent());
+        else{
+            if(!commentEntity.getPassword().equals(commentDto.getPassword()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            commentEntity.setContent(commentDto.getContent());
+            message = "댓글이 수정되었습니다";
+        }
 
-        entity = commentRepository.save(entity);
+        commentEntity = commentRepository.save(commentEntity);
 
-        return CommentDto.fromEntity(entity);
+        return message;
     }
 
     public void deleteComment(Integer itemId, Integer commentId, CommentDto commentDto){
