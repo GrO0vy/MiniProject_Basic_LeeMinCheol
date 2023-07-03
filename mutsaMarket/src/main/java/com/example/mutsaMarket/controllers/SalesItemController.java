@@ -4,15 +4,18 @@ import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.SalesItemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.print.attribute.standard.Media;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -20,11 +23,11 @@ public class SalesItemController {
     private final SalesItemService service;
 
     @PostMapping
-    public ResponseEntity register(@RequestBody SalesItemDto salesItemDao){
-        service.registerItem(salesItemDao);
+    public ResponseEntity register(@RequestBody SalesItemDto salesItemDto){
+        service.registerItem(salesItemDto);
         ResponseObject response = new ResponseObject();
         response.setMessage("등록이 완료되었습니다");
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -47,7 +50,7 @@ public class SalesItemController {
         ResponseObject response = new ResponseObject();
         response.setMessage("물품이 수정되었습니다");
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value = "/{itemId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -61,7 +64,7 @@ public class SalesItemController {
         ResponseObject response = new ResponseObject();
         response.setMessage("물품이 수정되었습니다.");
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{itemId}")
@@ -71,5 +74,15 @@ public class SalesItemController {
         ResponseObject response = new ResponseObject();
         response.setMessage("물품을 삭제했습니다.");
         return ResponseEntity.ok().body(response);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity dataIntegrityViolationError(DataIntegrityViolationException exception){
+        log.error("모든 항목을 입력하지 않음");
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("필수 항목을 입력해주세요");
+
+        return ResponseEntity.badRequest().body(response);
     }
 }

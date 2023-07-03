@@ -1,9 +1,11 @@
 package com.example.mutsaMarket.dto;
 
 import com.example.mutsaMarket.entity.SalesItemEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SalesItemDto {
     private Integer id;
     private String title;
@@ -22,8 +24,6 @@ public class SalesItemDto {
         salesItemDao.setImageUrl(entity.getImageUrl());
         salesItemDao.setMinPriceWanted(entity.getMinPriceWanted());
         salesItemDao.setStatus(entity.getStatus());
-        salesItemDao.setWriter(entity.getWriter());
-        salesItemDao.setPassword(entity.getPassword());
 
         return salesItemDao;
     }
