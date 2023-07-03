@@ -81,7 +81,7 @@ public class SalesItemController {
         log.error("모든 항목을 입력하지 않음");
 
         ResponseObject response = new ResponseObject();
-        response.setMessage("필수 항목을 입력해주세요");
+        response.setMessage("필수 항목을 모두 입력해주세요");
 
         return ResponseEntity.badRequest().body(response);
     }
