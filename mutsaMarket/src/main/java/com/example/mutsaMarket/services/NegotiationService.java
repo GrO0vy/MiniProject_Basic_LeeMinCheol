@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class NegotiationService {
@@ -71,6 +74,37 @@ public class NegotiationService {
 
             return negotiationDtoPage;
         }
-
     }
+
+    public void updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+        if(!salesItemRepository.existsById(itemId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        List<NegotiationEntity> negotiationEntityList = negotiationRepository.findAllByItemId(itemId);
+
+        NegotiationEntity negotiationEntity = null;
+
+        for(NegotiationEntity entity : negotiationEntityList){
+            if(proposalId == entity.getId()){
+                negotiationEntity = entity;
+                break;
+            }
+        }
+
+        if(negotiationEntity.equals(null)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        else{
+             if(negotiationEntity.getWriter().equals(negotiationDto.getWriter())){
+                 if(negotiationEntity.getPassword().equals(negotiationDto.getPassword())){
+                    negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
+                    negotiationRepository.save(negotiationEntity);
+                 }
+                 else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+             }
+             else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

@@ -15,7 +15,10 @@ public class NegotiationController {
     private final NegotiationService service;
 
     @PostMapping
-    public ResponseEntity register(@PathVariable("itemId") Integer itemId, @RequestBody NegotiationDto negotiationDto){
+    public ResponseEntity register(@PathVariable("itemId") Integer itemId,
+                                   @RequestBody NegotiationDto negotiationDto
+    )
+    {
         service.registerNegotiation(itemId, negotiationDto);
 
         ResponseObject response = new ResponseObject();
@@ -30,8 +33,22 @@ public class NegotiationController {
                                         @RequestParam(value = "size", defaultValue = "2") Integer size,
                                         @RequestParam(value = "writer") String writer,
                                         @RequestParam(value = "password") String password
-                                        )
+    )
     {
         return service.readNegotiationAll(itemId, page, size, writer, password);
+    }
+
+    @PutMapping("/{proposalId}")
+    public ResponseEntity update(@PathVariable("itemId") Integer itemId,
+                       @PathVariable("proposalId") Integer proposalId,
+                       @RequestBody NegotiationDto negotiationDto
+    )
+    {
+        service.updateNegotiation(itemId, proposalId, negotiationDto);
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("제안이 수정되었습니다.");
+
+        return ResponseEntity.ok(response);
     }
 }
