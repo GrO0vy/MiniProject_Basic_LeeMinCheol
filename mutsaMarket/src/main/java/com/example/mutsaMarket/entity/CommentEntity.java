@@ -9,9 +9,9 @@ import lombok.Data;
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(nullable = false)
-    private int itemId;
+    private Integer itemId;
     @Column(nullable = false)
     private String writer;
     @Column(nullable = false)
