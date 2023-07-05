@@ -7,11 +7,11 @@ import lombok.Data;
 @Entity
 @Table(name = "negotiation")
 public class NegotiationEntity {
-    private int id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int itemId;
-    private int suggestedPrice;
+    private Integer id;
+    private Integer itemId;
+    private Integer suggestedPrice;
     private String status;
     private String writer;
     private String password;
