@@ -18,11 +18,8 @@ public class NegotiationDto {
         NegotiationDto negotiationDto = new NegotiationDto();
 
         negotiationDto.setId(entity.getId());
-        negotiationDto.setItemId(entity.getItemId());
         negotiationDto.setSuggestedPrice(entity.getSuggestedPrice());
         negotiationDto.setStatus(entity.getStatus());
-        negotiationDto.setWriter(entity.getWriter());
-        negotiationDto.setPassword(entity.getPassword());
 
         return negotiationDto;
     }
