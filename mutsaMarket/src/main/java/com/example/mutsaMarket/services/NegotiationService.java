@@ -79,11 +79,15 @@ public class NegotiationService {
         }
     }
 
-    public void updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+    public int updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         List<NegotiationEntity> negotiationEntityList = negotiationRepository.findAllByItemId(itemId);
+
+        SalesItemEntity ownerData = salesItemRepository.findById(itemId).get();
+        String ownerId = ownerData.getWriter();
+        String ownerPassword = ownerData.getPassword();
 
         NegotiationEntity negotiationEntity = null;
 
@@ -98,10 +102,33 @@ public class NegotiationService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         else{
+            // 물품 가격제안을 한 사용자 일 때
              if(negotiationEntity.getWriter().equals(negotiationDto.getWriter())){
                  if(negotiationEntity.getPassword().equals(negotiationDto.getPassword())){
-                    negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
-                    negotiationRepository.save(negotiationEntity);
+                     // 상태가 수락일 때 사용자가 구매확정가능
+                     if(negotiationEntity.getStatus().equals("수락")){
+                         negotiationEntity.setStatus(negotiationEntity.getStatus());
+                         negotiationRepository.save(negotiationEntity);
+                         ownerData.setStatus("판매 완료");
+                         salesItemRepository.save(ownerData);
+                         return 1;
+                     }
+                     // 수락이 아닐 때는 가격 제시 가능
+                     else if(!negotiationEntity.getSuggestedPrice().equals(null)){
+                         negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
+                         negotiationRepository.save(negotiationEntity);
+                         return 2;
+                     }
+                     else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                 }
+                 else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+             }
+             // 물품 등록자일경우 제안 상태를 수락 또는 거절로 변경 가능
+             else if(negotiationEntity.getWriter().equals(ownerId)){
+                 if(negotiationEntity.getPassword().equals(ownerPassword)){
+                     negotiationEntity.setStatus(negotiationDto.getStatus());
+                     negotiationRepository.save(negotiationEntity);
+                     return 3;
                  }
                  else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
              }
