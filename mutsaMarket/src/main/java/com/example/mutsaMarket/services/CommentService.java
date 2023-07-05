@@ -39,7 +39,7 @@ public class CommentService {
 
     public Page<CommentDto> readCommentAll(Integer itemId, Integer pageNumber, Integer pageSize){
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageable);
+        Page<CommentEntity> commentEntityPage = commentRepository.findAllByItemId(itemId, pageable);
 
         Page<CommentDto> commentDtoPage = commentEntityPage.map(CommentDto::fromEntity);
 
