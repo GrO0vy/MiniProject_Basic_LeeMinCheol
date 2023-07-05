@@ -4,6 +4,7 @@ import com.example.mutsaMarket.dto.NegotiationDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.NegotiationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,5 +22,16 @@ public class NegotiationController {
         response.setMessage("구매 제안이 등록되었습니다.");
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public Page<NegotiationDto> readAll(@PathVariable("itemId") Integer itemId,
+                                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                        @RequestParam(value = "size", defaultValue = "2") Integer size,
+                                        @RequestParam(value = "writer") String writer,
+                                        @RequestParam(value = "password") String password
+                                        )
+    {
+        return service.readNegotiationAll(itemId, page, size, writer, password);
     }
 }
