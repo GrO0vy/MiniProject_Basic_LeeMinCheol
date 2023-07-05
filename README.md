@@ -6,32 +6,32 @@
 
 ## 물품 관리
 
-### CREATE
+### ● CREATE
 
-### READ
+### ● READ
 
-### UPDATE
+### ● UPDATE
 
-### DELETE
+### ● DELETE
 
 
 ## 댓글 관리
 
-### CREATE
+### ● CREATE
 
-### READ
+### ● READ
 
-### UPDATE
+### ● UPDATE
 
-### DELETE
+### ● DELETE
 
 
 ## 구매제안 관리
 
-### CREATE
+### ● CREATE
 
-### READ
+### ● READ
 
-### UPDATE
+### ● UPDATE
 
-### DELETE
+### ● DELETE
