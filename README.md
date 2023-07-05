@@ -122,8 +122,11 @@ result >
 
 {
     "title": "중asd북 팝니다",
+    
     "description": "20129년 맥북 프로 13인치 모델입니다",
+    
     "minPriceWanted": 1000000,
+    
     "status": "판매중"
 }
 
@@ -134,10 +137,15 @@ URL : PUT /items{itemId}
 
 {
     "title": "중고 맥북 팝니다",
+    
     "description": "2029년 맥북 프로 13인치 모델입니다",
+    
     "minPriceWanted": 1100000,
+    
     "writer": "jeeho.dev",
+    
     "password": "1qaz2wsx"
+    
 }
 
 {
@@ -149,8 +157,11 @@ URL : PUT /items{itemId}/images
 form-data >
 
 image:    image.png (file)
+
 writer:   jeeho.dev
+
 password: 1qaz2wsx
+
 
 result >
 
@@ -166,6 +177,7 @@ URL : DELETE /items{itemId}
 
 {
     "writer": "jeeho.dev",
+    
     "password": "1qaz2wsx"
 }
 
