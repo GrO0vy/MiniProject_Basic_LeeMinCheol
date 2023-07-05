@@ -12,9 +12,13 @@ URL : POST http://localhost:8080/items
 
 {
     "title": "중asd북 팝니다",
+    
     "description": "20129년 맥북 프로 13인치 모델입니다",
+    
     "minPriceWanted": 1000000,
+    
     "writer": "lee.dev",
+    
     "password": "1qaz2wsx"
 }
 
@@ -34,44 +38,82 @@ result >
     "content": [
         {
             "id": 1,
+            
             "title": "중asd북 팝니다",
+            
             "description": "20129년 맥북 프로 13인치 모델입니다",
+            
             "minPriceWanted": 1000000,
+            
             "status": "판매중"
+            
         },
+        
         {
             "id": 2,
+            
             "title": "중asd북 팝니다",
+            
             "description": "20129년 맥북 프로 13인치 모델입니다",
+            
             "minPriceWanted": 1000000,
+            
             "status": "판매중"
+            
         }
+        
     ],
+    
     "pageable": {
+    
         "sort": {
+        
             "empty": true,
+            
             "sorted": false,
+            
             "unsorted": true
+            
         },
+        
         "offset": 0,
+        
         "pageSize": 2,
+        
         "pageNumber": 0,
+        
         "paged": true,
+        
         "unpaged": false
+        
     },
+    
     "last": false,
+    
     "totalPages": 2,
+    
     "totalElements": 3,
+    
     "size": 2,
+    
     "number": 0,
+    
     "sort": {
+    
         "empty": true,
+        
         "sorted": false,
+        
         "unsorted": true
+        
     },
+    
     "first": true,
+    
     "numberOfElements": 2,
+    
     "empty": false
+    
 }
 
 URL : GET /items{itemId}
