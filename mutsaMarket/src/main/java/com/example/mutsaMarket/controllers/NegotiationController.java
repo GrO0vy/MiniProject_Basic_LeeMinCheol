@@ -4,11 +4,14 @@ import com.example.mutsaMarket.dto.NegotiationDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.NegotiationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/items/{itemId}/proposals")
 public class NegotiationController {
@@ -75,4 +78,13 @@ public class NegotiationController {
         return ResponseEntity.ok(response);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity dataIntegrityViolationError(DataIntegrityViolationException exception){
+        log.error("모든 항목을 입력하지 않음");
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("필수 항목을 모두 입력해주세요");
+
+        return ResponseEntity.badRequest().body(response);
+    }
 }
