@@ -58,6 +58,9 @@ public class NegotiationService {
             if(password.equals(ownerPassword)){
                 // 해당 물품의 모든 제안을 가져와서 리턴
                 negotiationEntityPage = negotiationRepository.findAllByItemId(itemId, pageable);
+
+                if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
                 negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
                 return negotiationDtoPage;
             }
@@ -66,9 +69,9 @@ public class NegotiationService {
         // 물품 등록자가 아니면
         else{
             // 입력 받은 아이디로 등록된 제안 가져옴
-            negotiationEntityPage = negotiationRepository.findAllByWriter(writer, pageable);
+            negotiationEntityPage = negotiationRepository.findAllByItemIdAndWriter(itemId, writer, pageable);
             // 비어있으면 BAD Request
-            if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
             negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
 
@@ -106,5 +109,32 @@ public class NegotiationService {
         }
     }
 
+    public void deleteNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+        if(!salesItemRepository.existsById(itemId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        List<NegotiationEntity> negotiationEntityList = negotiationRepository.findAllByItemId(itemId);
+
+        NegotiationEntity negotiationEntity = null;
+
+        for(NegotiationEntity entity : negotiationEntityList){
+            if(proposalId == entity.getId()){
+                negotiationEntity = entity;
+                break;
+            }
+        }
+
+        if(negotiationEntity.equals(null)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        else{
+            if(negotiationEntity.getWriter().equals(negotiationDto.getWriter())){
+                if(negotiationEntity.getPassword().equals(negotiationDto.getPassword())){
+                    negotiationRepository.delete(negotiationEntity);
+                }
+                else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

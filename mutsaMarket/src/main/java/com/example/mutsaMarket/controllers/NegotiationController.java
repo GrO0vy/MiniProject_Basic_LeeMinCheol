@@ -51,4 +51,19 @@ public class NegotiationController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{proposalId}")
+    public ResponseEntity delete(@PathVariable("itemId") Integer itemId,
+                                 @PathVariable("proposalId") Integer proposalId,
+                                 @RequestBody NegotiationDto negotiationDto
+    )
+    {
+        service.deleteNegotiation(itemId, proposalId, negotiationDto);
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("제안을 삭제했습니다.");
+
+        return ResponseEntity.ok(response);
+    }
+
 }
