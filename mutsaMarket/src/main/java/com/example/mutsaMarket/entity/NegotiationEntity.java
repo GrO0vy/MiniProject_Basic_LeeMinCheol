@@ -10,9 +10,12 @@ public class NegotiationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private Integer itemId;
+    @Column(nullable = false)
     private Integer suggestedPrice;
     private String status;
+    @Column(nullable = false)
     private String writer;
     private String password;
 }
