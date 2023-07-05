@@ -11,6 +11,7 @@
 URL : POST http://localhost:8080/items
 
 {
+
     "title": "중asd북 팝니다",
     
     "description": "20129년 맥북 프로 13인치 모델입니다",
@@ -20,12 +21,15 @@ URL : POST http://localhost:8080/items
     "writer": "lee.dev",
     
     "password": "1qaz2wsx"
+    
 }
 
 result >
 
 {
+
     "message": "등록이 완료되었습니다"
+    
 }
 
 ### READ
@@ -37,6 +41,7 @@ result >
 {
     "content": [
         {
+        
             "id": 1,
             
             "title": "중asd북 팝니다",
@@ -50,6 +55,7 @@ result >
         },
         
         {
+        
             "id": 2,
             
             "title": "중asd북 팝니다",
@@ -121,6 +127,7 @@ URL : GET /items{itemId}
 result >
 
 {
+
     "title": "중asd북 팝니다",
     
     "description": "20129년 맥북 프로 13인치 모델입니다",
@@ -128,6 +135,7 @@ result >
     "minPriceWanted": 1000000,
     
     "status": "판매중"
+    
 }
 
 
@@ -136,6 +144,7 @@ result >
 URL : PUT /items{itemId}
 
 {
+
     "title": "중고 맥북 팝니다",
     
     "description": "2029년 맥북 프로 13인치 모델입니다",
@@ -149,7 +158,9 @@ URL : PUT /items{itemId}
 }
 
 {
+
     "message": "물품이 수정되었습니다."
+    
 }
 
 URL : PUT /items{itemId}/images
@@ -166,7 +177,9 @@ password: 1qaz2wsx
 result >
 
 {
+
     "message": "이미지가 등록되었습니다."
+    
 }
 
 
@@ -176,13 +189,17 @@ result >
 URL : DELETE /items{itemId}
 
 {
+
     "writer": "jeeho.dev",
     
     "password": "1qaz2wsx"
+    
 }
 
 result >
 
 {
+
     "message": "물품을 삭제했습니다."
+    
 }
