@@ -60,6 +60,7 @@ public class SalesItemService {
             SalesItemDto salesItemDto = new SalesItemDto();
             salesItemDto.setTitle(entity.getTitle());
             salesItemDto.setDescription(entity.getDescription());
+            salesItemDto.setImageUrl(entity.getImageUrl());
             salesItemDto.setMinPriceWanted(entity.getMinPriceWanted());
             salesItemDto.setStatus(entity.getStatus());
 
@@ -145,12 +146,6 @@ public class SalesItemService {
         }
 
         salesItemRepository.delete(optionalEntity.get());
-//        List<CommentEntity> commentEntityList = commentRepository.findAllByItemId(itemId);
-//
-//        for(var commentEntity : commentEntityList){
-//            commentRepository.delete(commentEntity);
-//        }
-
         commentRepository.deleteAllByItemId(itemId);
     }
 
