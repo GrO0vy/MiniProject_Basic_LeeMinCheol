@@ -158,7 +158,7 @@ URL : `GET /items?page=1 & size=1`
 }
   ```
 
-## ● READ ( 단일 물품 조회 )
+### ● READ ( 단일 물품 조회 )
 URL : `GET /items/{itemId}`
 
 
@@ -216,6 +216,34 @@ URL : `PUT /items/{itemId}`
   }
   ```
 
+### ● UPDATE ( 물품 이미지 등록 )
+URL : `PUT /items/{itemId}/images`
+ #### ResquestBody
+
+ 등록된 물품의 이미지를 등록하는 URL 요청
+  - RequestBody 에 form-data 를 포함해서 요청을 전달 ( 이미지 파일, 작성자, 비밀번호 )
+  - 작성자와 비밀번호가 맞는지 확인하고 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
+  - 작성자와 비밀번호가 일치하면 이미지를 저장하고 이미지 경로를 물품 Entity 에 저장한다.
+
+  ※ 이미지 등 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "이미지가 등록되었습니다."
+  }
+  ```
+
+  ※ 이미지 등록록 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
+  ```json
+  {
+    "timestamp": "2023-07-26T04:27:35.956+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": ...
+    "message": "400 BAD_REQUEST",
+    "path": "/items/1"
+  }
+  ```
+    
 
 ### ● DELETE
 URL : `DELETE /items/{itemId}`
