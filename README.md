@@ -158,6 +158,25 @@ URL : `GET /items?page=1 & size=1`
 }
   ```
 
+## ● READ ( 단일 물품 조회 )
+URL : `GET /items/{itemId}`
+
+
+  등록된 물품정보를 수정하는 URL 요청
+  - 제목, 설명, 최소 가격을 물품을 등록한 작성자만 수정할 수 있도록한다.
+  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
+  - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
+
+
+  ※ 조회 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "title": "중고 맥북 팝니다",
+    "description": "2019년 맥북 프로 13인치 모델입니다",
+    "minPriceWanted": 1000000,
+    "status": "판매중"
+  }
+  ```
 
 ### ● UPDATE
 URL : `PUT /items/{itemId}`
@@ -199,6 +218,41 @@ URL : `PUT /items/{itemId}`
 
 
 ### ● DELETE
+URL : `DELETE /items/{itemId}`
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "lee.dev",
+    "password": "1qaz2wsx"
+  }
+  ```
+  등록된 물품을 삭제하는 URL 요청
+  - 물품을 등록한 작성자만 삭제할 수 있도록한다.
+  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
+  - 해당 글에 달린 모든 댓글을 삭제한다.
+  - 해당 물품의 이미지와 이미지 디렉토리를 삭제한다.
+  - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
+
+
+  ※ 삭제 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "물품을 삭제했습니다."
+  }
+  ```
+
+  ※ 삭제 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
+  ```json
+  {
+    "timestamp": "2023-07-26T04:33:34.507+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": ...
+    "message": "400 BAD_REQUEST",
+    "path": "/items/1"
+  }
+  ```
 
 
 ## 댓글 관리
