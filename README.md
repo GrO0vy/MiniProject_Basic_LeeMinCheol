@@ -7,7 +7,7 @@
 ## 물품 관리
 
 ### ● CREATE
-`POST /items`
+URL : `POST /items`
 
   #### ResponseBody
   ```json
