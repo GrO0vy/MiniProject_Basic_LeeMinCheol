@@ -67,61 +67,53 @@ public class NegotiationService {
         }
     }
 
-    public int updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+    public String updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        List<NegotiationEntity> negotiationEntityList = negotiationRepository.findAllByItemId(itemId);
-
-        SalesItemEntity ownerData = salesItemRepository.findById(itemId).get();
-        String ownerId = ownerData.getWriter();
-        String ownerPassword = ownerData.getPassword();
-
-        NegotiationEntity negotiationEntity = null;
-
-        for(NegotiationEntity entity : negotiationEntityList){
-            if(proposalId == entity.getId()){
-                negotiationEntity = entity;
-                break;
-            }
-        }
-
-        if(negotiationEntity.equals(null)){
+        if(!negotiationRepository.existsById(proposalId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        String proposalName = negotiationDto.getWriter();
+        String proposalPassword = negotiationDto.getPassword();
+        Integer suggestedPrice = negotiationDto.getSuggestedPrice();
+        String status = negotiationDto.getStatus();
+
+        // 물품 등록자일경우 제안 상태를 수락 또는 거절로 변경 가능
+        if(isOwner(itemId, proposalName, proposalPassword)){
+            NegotiationEntity entity = negotiationRepository.findById(proposalId).get();
+            if(status != null){
+                entity.setStatus(status);
+                negotiationRepository.save(entity);
+                return "제안의 상태가 변경되었습니다.";
+            }
+            else throw new IllegalArgumentException();
         }
-        else{
-            // 물품 가격제안을 한 사용자 일 때
-             if(negotiationEntity.getWriter().equals(negotiationDto.getWriter())){
-                 if(negotiationEntity.getPassword().equals(negotiationDto.getPassword())){
-                     // 상태가 수락일 때 사용자가 구매확정가능
-                     if(negotiationEntity.getStatus().equals("수락")){
-                         negotiationEntity.setStatus(negotiationEntity.getStatus());
-                         negotiationRepository.save(negotiationEntity);
-                         ownerData.setStatus("판매 완료");
-                         salesItemRepository.save(ownerData);
-                         return 1;
-                     }
-                     // 수락이 아닐 때는 가격 제시 가능
-                     else if(!negotiationEntity.getSuggestedPrice().equals(null)){
-                         negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
-                         negotiationRepository.save(negotiationEntity);
-                         return 2;
-                     }
-                     else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-                 }
-                 else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-             }
-             // 물품 등록자일경우 제안 상태를 수락 또는 거절로 변경 가능
-             else if(negotiationEntity.getWriter().equals(ownerId)){
-                 if(negotiationEntity.getPassword().equals(ownerPassword)){
-                     negotiationEntity.setStatus(negotiationDto.getStatus());
-                     negotiationRepository.save(negotiationEntity);
-                     return 3;
-                 }
-                 else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-             }
-             else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        // 그렇지 않고 제안을 등록한 사용자이면
+        else if(isValidUser(proposalId, proposalName, proposalPassword)){
+            NegotiationEntity negotiationEntity = negotiationRepository.findById(proposalId).get();
+            if(suggestedPrice != null){
+                negotiationEntity.setSuggestedPrice(suggestedPrice);
+                negotiationRepository.save(negotiationEntity);
+                return "제안이 수정되었습니다.";
+            }
+            else if(negotiationEntity.getStatus().equals("수락") && status.equals("확정")){
+                negotiationEntity.setStatus("확정");
+                SalesItemEntity salesItemEntity = salesItemRepository.findById(itemId).get();
+                salesItemEntity.setStatus("판매 완료");
+                negotiationRepository.save(negotiationEntity);
+                salesItemRepository.save(salesItemEntity);
+                List<NegotiationEntity> entities = negotiationRepository.findAllByItemIdAndIdNot(itemId, proposalId);
+                for(NegotiationEntity entity: entities){
+                    entity.setStatus("거절");
+                    negotiationRepository.save(entity);
+                }
+                return "구매가 확정되었습니다.";
+            }
+            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        // 유효한 사용자가 아니면
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     public void deleteNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
@@ -159,5 +151,11 @@ public class NegotiationService {
         String ownerPassword = entity.getPassword();
 
         return ownerName.equals(writer) && ownerPassword.equals(password);
+    }
+
+    public boolean isValidUser(Integer proposalId, String writer, String password){
+        NegotiationEntity entity = negotiationRepository.findById(proposalId).get();
+
+        return entity.getWriter().equals(writer) && entity.getPassword().equals(password);
     }
 }

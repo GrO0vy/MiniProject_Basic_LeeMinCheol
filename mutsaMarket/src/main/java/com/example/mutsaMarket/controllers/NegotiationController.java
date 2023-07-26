@@ -47,19 +47,10 @@ public class NegotiationController {
                        @RequestBody NegotiationDto negotiationDto
     )
     {
-        int result = service.updateNegotiation(itemId, proposalId, negotiationDto);
+        String result = service.updateNegotiation(itemId, proposalId, negotiationDto);
 
         ResponseObject response = new ResponseObject();
-
-        if(result == 1){
-            response.setMessage("구매가 확정되었습니다");
-        }
-        else if(result == 2){
-            response.setMessage("제안의 상태가 변경되었습니다");
-        }
-        else{
-            response.setMessage("제안이 수정되었습니다.");
-        }
+        response.setMessage(result);
 
         return ResponseEntity.ok(response);
     }
