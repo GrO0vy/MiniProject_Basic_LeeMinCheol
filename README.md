@@ -160,6 +160,43 @@ URL : `GET /items?page=1 & size=1`
 
 
 ### ● UPDATE
+URL : `PUT /items/{itemId}`
+
+  #### ResquestBody
+  ```json
+  {
+    "title": "중고 노트북 팝니다",
+    "description": "2019년 맥북 프로 13인치 모델입니다",
+    "minPriceWanted": 1000000,
+    "writer": "lee.dev",
+    "password": "1qaz2wsx"
+  }
+  ```
+  등록된 물품정보를 수정하는 URL 요청
+  - 제목, 설명, 최소 가격을 물품을 등록한 작성자만 수정할 수 있도록한다.
+  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
+  - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
+
+
+  - 수정 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "물품이 수정되었습니다"
+  }
+  ```
+
+  - 수정 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
+  ```json
+  {
+    "timestamp": "2023-07-26T04:27:35.956+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": ...
+    "message": "400 BAD_REQUEST",
+    "path": "/items/1"
+  }
+  ```
+
 
 ### ● DELETE
 
