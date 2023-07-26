@@ -284,15 +284,242 @@ URL : `DELETE /items/{itemId}`
   ```
 
 
+
 ## 댓글 관리
 
 ### ● CREATE
+URL : `POST items/{itemId}/comments`
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234",
+    "content": "할인 가능하신가요?"
+  }  
+  ```
+  댓글을 등록하는 URL 요청
+  - 등록된 물품에 대해서만 댓글을 달 수 있다.
+  - 댓글을 입력할 때는 반드시 내용, 작성자, 비밀번호를 입력해야한다.
+  - 하나의 물품에 여러 댓글이 달릴 수 있다.
+
+
+  ※ 댓글 등록 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "댓글이 등록되었습니다."
+  }
+  ```
+
+  ※ 댓글 등록 실패 시 결과 ( ResponseBody ) - 존재하지 않는 물품에 댓글을 달려고 시도할 때
+  ```json
+  {
+    "timestamp": "2023-07-26T13:57:34.821+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "trace": ...
+    "message": "404 NOT_FOUND",
+    "path": "/items/2/comments"
+  }
+  ```
+
 
 ### ● READ
+URL : `GET items/{itemId}/comments?page=0&size=3`
 
-### ● UPDATE
+  댓글을 조회하는 URL 요청
+  - 등록된 물품에 달린 댓글을 조회 할 수 있고 모든 사용자가 조회 가능하다.
+  - 페이지 번호와 크기를 전달해주지 않으면 기본적으로 하나의 페이지에 25개의 댓글을 보여주고 0번째 페이지를 보여준다.
+  
+
+  ※ 댓글 조회 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "content": [
+        {
+            "id": 1,
+            "content": "할인 가능하신가요?"
+        },
+        {
+            "id": 2,
+            "content": "조금 더 할인 가능하신가요?"
+        },
+        {
+            "id": 3,
+            "content": "할인 가능하신가요? 너무 비쌉니다다"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 3,
+        "unpaged": false,
+        "paged": true
+    },
+    "last": true,
+    "totalElements": 3,
+    "totalPages": 1,
+    "size": 3,
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "numberOfElements": 3,
+    "empty": false
+  }
+  ```
+
+
+### ● UPDATE ( 댓글 내용수정 )
+URL : `PUT items/{itemId}/comments/{commentId}`
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234",
+    "content": "할인 가능하신가요? 1000000 정도면 고려 가능합니다"
+  } 
+  ```
+  댓글 내용을 수정하는 URL 요청
+  - 댓글 작성자와 비밀번호가 일치해야 댓글을 수정할 수 있다. ( 물품 등록자가 아닐 때 )
+  - 댓글을 수정할 때는 반드시 내용과 작성자, 비밀번호를 입력해서 올바른 사용자인지 확인한다.
+
+
+  ※ 댓글 등록 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "댓글이 수정되었습니다"
+  }
+  ```
+
+  ※ 댓글 등록 실패 시 결과 ( ResponseBody ) - 존재하지 않는 댓글을 수정하려고 시도할 때
+  ```json
+  {
+    "timestamp": "2023-07-26T13:57:34.821+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "trace": ...
+    "message": "404 NOT_FOUND",
+    "path": "/items/2/comments"
+  }
+  ```
+
+
+### ● UPDATE ( 댓글의 답글 달기 )
+URL : `PUT items/{itemId}/comments/{commentId}`
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "lee.dev",
+    "password": "1qaz2wsx",
+    "reply": "안됩니다."
+  }
+  ```
+  댓글의 답글을 다는 URL 요청 ( 댓글 내용 수정 URL 요청과 동일한 요청 )
+  - 물품 등록자이고 비밀번호가 일치해야 댓글의 답글을 추가 할 수 있다.
+  - 댓글 ( comment ) 엔티티에는 reply 컬럼이 있는데 해당 내용을 전달해서 답글을 추가한다.
+
+
+  ※ 답글 등록 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "댓글에 답글이 추가되었습니다."
+  }
+  ```
+  ```json
+  {
+    "content": [
+        {
+            "id": 1,
+            "content": "할인 가능하신가요?",
+            "reply": "안됩니다."
+        },
+        {
+            "id": 2,
+            "content": "할인 가능하신가요? 1000000 정도면 고려 가능합니다"
+        },
+        {
+            "id": 3,
+            "content": "할인 가능하신가요? 너무 비쌉니다다"
+        }
+    ],
+  }
+  ```
+
+  ※ 답글 등록 실패 시 결과 ( ResponseBody ) - 물품 등록자 정보가 일치하지 않을 
+  ```json
+  {
+    "timestamp": "2023-07-26T14:15:44.134+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": ...
+    "message": "400 BAD_REQUEST",
+    "path": "/items/1/comments/2"
+  }
+  ```
+
 
 ### ● DELETE
+URL : `DELETE /items/{itemId}/comment/{commentId}`
+  
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234"
+  }
+  ```
+
+
+  등록된 댓글을 삭제하는 URL 요청
+  - 댓글을 등록한 작성자만 삭제할 수 있도록한다.
+  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
+  - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
+  - 없는 댓글을 삭제하려고 하는 경우 404 에러를 띄운다.
+
+
+  ※ 삭제 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "물품을 삭제했습니다."
+  }
+  ```
+
+
+  ※ 삭제 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
+  ```json
+  {
+    "timestamp": "2023-07-26T04:33:34.507+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "trace": ...
+    "message": "400 BAD_REQUEST",
+    "path": "/items/1/comment/2"
+  }
+  ```
+
+
+  ※ 삭제 실패 시 결과 ( ResponseBody ) - 없는 댓글을 삭제하려고 할 때 
+  ```json
+  {
+    "timestamp": "2023-07-26T14:19:09.708+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "trace":...
+    "message": "404 NOT_FOUND",
+    "path": "/items/1/comments/2"
+  }
+  ```
 
 
 ## 구매제안 관리
