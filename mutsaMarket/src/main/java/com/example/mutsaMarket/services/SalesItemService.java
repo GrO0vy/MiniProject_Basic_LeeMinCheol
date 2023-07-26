@@ -148,19 +148,22 @@ public class SalesItemService {
         SalesItemEntity entity = optionalEntity.get();
 
         // 이미지 삭제
-        try{
-            // 파일 삭제
-            String file = entity.getImageUrl();
-            file = file.replace("static", "itemImages");
-            // 디렉토리 삭제
-            Files.deleteIfExists(Path.of(file));
-            String directory = file.substring(0, file.indexOf("/image.png"));
-            Files.deleteIfExists(Path.of(directory));
+        if(entity.getImageUrl() != null){
+            try{
+                // 파일 삭제
+                String file = entity.getImageUrl();
+                file = file.replace("static", "itemImages");
+                // 디렉토리 삭제
+                Files.deleteIfExists(Path.of(file));
+                String directory = file.substring(0, file.indexOf("/image.png"));
+                Files.deleteIfExists(Path.of(directory));
+            }
+            catch(Exception e){
+                log.warn(e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-        catch(Exception e){
-            log.warn(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
 
         salesItemRepository.delete(entity);
         commentRepository.deleteAllByItemId(itemId);
