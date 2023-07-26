@@ -30,6 +30,7 @@ public class SalesItemController {
         return ResponseEntity.ok(response);
     }
 
+    // 쿼리 파라미터를 전달하지 않으면 기본 값인 Integer.MAX_VALUE 를 페이지 크기로 전달하여 페이지 전체 조회
     @GetMapping
     public Page<SalesItemDto> readAll(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                                       @RequestParam(value = "size", defaultValue = Integer.MAX_VALUE + "" ) Integer pageSize

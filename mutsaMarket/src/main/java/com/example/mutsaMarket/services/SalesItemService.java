@@ -19,8 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,8 +74,10 @@ public class SalesItemService {
         if(!optionalEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        if(!isValidPassword(optionalEntity,salesItemDto.getPassword()))
+        if(!isValidUser(optionalEntity,salesItemDto.getWriter(), salesItemDto.getPassword())){
+            log.info("작성자 정보가 일치하지 않음");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
         SalesItemEntity salesItemEntity = optionalEntity.get();
 
@@ -98,8 +98,10 @@ public class SalesItemService {
         if(!optionalEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        if(!isValidPassword(optionalEntity,password))
+        if(!isValidUser(optionalEntity, writer, password)){
+            log.info("작성자 정보가 일치하지 않음");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
 
         String imageDir = String.format("itemImages/%d",itemId);
@@ -137,8 +139,10 @@ public class SalesItemService {
         if(!optionalEntity.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        if(!isValidPassword(optionalEntity,salesItemDto.getPassword()))
+        if(!isValidUser(optionalEntity,salesItemDto.getWriter(), salesItemDto.getPassword())){
+            log.info("작성자 정보가 일치하지 않음");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
         salesItemRepository.delete(optionalEntity.get());
 //        List<CommentEntity> commentEntityList = commentRepository.findAllByItemId(itemId);
@@ -150,7 +154,8 @@ public class SalesItemService {
         commentRepository.deleteAllByItemId(itemId);
     }
 
-    public boolean isValidPassword(Optional<SalesItemEntity> optionalEntity, String password){
-        return optionalEntity.get().getPassword().equals(password);
+    public boolean isValidUser(Optional<SalesItemEntity> optionalEntity, String writer, String password){
+        SalesItemEntity entity = optionalEntity.get();
+        return entity.getWriter().equals(writer) && entity.getPassword().equals(password);
     }
 }
