@@ -162,7 +162,7 @@ URL : `GET /items?page=1 & size=1`
 URL : `GET /items/{itemId}`
 
 
-  등록된 물품정보를 수정하는 URL 요청
+  단일 물품정보를 조회하는 URL 요청
   - 제목, 설명, 최소 가격을 물품을 등록한 작성자만 수정할 수 있도록한다.
   - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
   - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
@@ -219,11 +219,14 @@ URL : `PUT /items/{itemId}`
 ### ● UPDATE ( 물품 이미지 등록 )
 URL : `PUT /items/{itemId}/images`
  #### ResquestBody
+ ![image](https://github.com/likelion-backend-5th/MiniProject_Basic_LeeMinCheol/assets/89755903/4d8127d7-a943-466c-9f86-b211f94a0c93)
+
 
  등록된 물품의 이미지를 등록하는 URL 요청
   - RequestBody 에 form-data 를 포함해서 요청을 전달 ( 이미지 파일, 작성자, 비밀번호 )
   - 작성자와 비밀번호가 맞는지 확인하고 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
   - 작성자와 비밀번호가 일치하면 이미지를 저장하고 이미지 경로를 물품 Entity 에 저장한다.
+  - 등록된 물품에 한에서만 이미지 등록을 진행할 수 있다.
 
   ※ 이미지 등 성공 시 결과 ( ResponseBody )
   ```json
