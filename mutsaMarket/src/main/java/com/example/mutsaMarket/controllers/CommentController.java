@@ -32,8 +32,8 @@ public class CommentController {
 
     @GetMapping
     public Page<CommentDto> readOne(@PathVariable("itemId") Integer itemId,
-                                    @RequestParam("page") Integer pageNumber,
-                                    @RequestParam("size") Integer pageSize)
+                                    @RequestParam(value= "page", defaultValue = "0") Integer pageNumber,
+                                    @RequestParam(value= "size", defaultValue = "25") Integer pageSize)
     {
         return service.readCommentAll(itemId,pageNumber,pageSize);
     }
