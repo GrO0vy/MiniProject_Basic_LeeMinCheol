@@ -50,8 +50,6 @@ URL : `GET /items?page=1 & size=1`
   - 쿼리 파라미터를 전달하지 않으면 페이지 번호는 0, 페이지 크기는 Integer.MAX_VALUE 가 전달되어 전체 물품을 조회한다.
 
 
-  
-  
   - 페이지 조회 시 결과 ( ResponseBody )
     
     요청 URL: GET http://localhost:8080/items?page= 0&size= 1
