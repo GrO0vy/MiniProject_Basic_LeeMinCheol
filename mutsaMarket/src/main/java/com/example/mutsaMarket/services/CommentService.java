@@ -56,21 +56,19 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         CommentEntity commentEntity = optionalEntity.get();
-        SalesItemEntity salesItemEntity = salesItemRepository.findById(itemId).get();
         String message;
 
-        if(salesItemEntity.getWriter().equals(commentDto.getWriter())){
-            if(!salesItemEntity.getPassword().equals(commentDto.getPassword()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if(isItemOwner(itemId, commentDto)){
             commentEntity.setReply(commentDto.getReply());
             message = "댓글에 답글이 추가되었습니다.";
         }
 
-        else{
-            if(!commentEntity.getPassword().equals(commentDto.getPassword()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        else if(isValidUser(commentId, commentDto)){
             commentEntity.setContent(commentDto.getContent());
             message = "댓글이 수정되었습니다";
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         commentEntity = commentRepository.save(commentEntity);
@@ -89,9 +87,28 @@ public class CommentService {
 
         CommentEntity entity = optionalEntity.get();
 
-        if(!entity.getPassword().equals(commentDto.getPassword()))
+        if(!isValidUser(commentId, commentDto))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         commentRepository.delete(entity);
+    }
+
+    private boolean isItemOwner(Integer itemId, CommentDto commentDto){
+        SalesItemEntity owner = salesItemRepository.findById(itemId).get();
+
+        String ownerName = owner.getWriter();
+        String ownerPassword = owner.getPassword();
+
+        return ownerName.equals(commentDto.getWriter()) && ownerPassword.equals(commentDto.getPassword());
+    }
+
+
+    private boolean isValidUser(Integer commentId, CommentDto commentDto){
+        CommentEntity writer = commentRepository.findById(commentId).get();
+
+        String writerName = writer.getWriter();
+        String writerPassword = writer.getPassword();
+
+        return writerName.equals(commentDto.getWriter()) && writerPassword.equals(commentDto.getPassword());
     }
 }
