@@ -26,14 +26,14 @@ URL : `POST /items`
   - 필수 항목이 입력되지 않으면 오류 메세지를 띄운다.
 
 
-  - 등록 성공 시 결과 ( ResponseBody )
+  ※ 등록 성공 시 결과 ( ResponseBody )
   ```json
   {
       "message": "등록이 완료되었습니다"
   }
   ```
 
-  - 등록 실패 시 결과 ( ResponseBody )
+  ※ 등록 실패 시 결과 ( ResponseBody )
   ```json
   {
       "message": "필수 항목을 모두 입력해주세요"
@@ -50,7 +50,7 @@ URL : `GET /items?page=1 & size=1`
   - 쿼리 파라미터를 전달하지 않으면 페이지 번호는 0, 페이지 크기는 Integer.MAX_VALUE 가 전달되어 전체 물품을 조회한다.
 
 
-  - 페이지 조회 시 결과 ( ResponseBody )
+  ※ 페이지 조회 시 결과 ( ResponseBody )
     
     요청 URL: GET http://localhost:8080/items?page= 0&size= 1
   ```json
@@ -93,7 +93,7 @@ URL : `GET /items?page=1 & size=1`
   ```
 
 
-  - 전체 조회 시 결과
+  ※ 전체 조회 시 결과
     
     요청 URL: GET http://localhost:8080/items
   ```json
@@ -178,14 +178,14 @@ URL : `PUT /items/{itemId}`
   - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
 
 
-  - 수정 성공 시 결과 ( ResponseBody )
+  ※ 수정 성공 시 결과 ( ResponseBody )
   ```json
   {
     "message": "물품이 수정되었습니다"
   }
   ```
 
-  - 수정 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
+  ※ 수정 실패 시 결과 ( ResponseBody ) - 작성자, 비밀번호가 일치하지 않을 때
   ```json
   {
     "timestamp": "2023-07-26T04:27:35.956+00:00",
