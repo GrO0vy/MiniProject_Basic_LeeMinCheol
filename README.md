@@ -261,6 +261,7 @@ URL : `DELETE /items/{itemId}`
   - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
   - 해당 글에 달린 모든 댓글을 삭제한다.
   - 해당 물품의 이미지와 이미지 디렉토리를 삭제한다.
+  - 해당 물품에 등록된 모든 구매제안을 삭제한다.
   - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
 
 
@@ -524,10 +525,213 @@ URL : `DELETE /items/{itemId}/comment/{commentId}`
 
 ## 구매제안 관리
 
+
 ### ● CREATE
+URL : `POST items/{itemId}/proposal`
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234",
+    "suggestedPrice": 1000000
+  }
+  ```
+  구메 제안을 등록하는 URL 요청
+  - 등록된 물품에 대해서만 구매 제안을 요청할 수 있다.
+  - 등록할 때는 반드시 제안 금액, 작성자, 비밀번호를 입력해야한다.
+  - 하나의 물품에 여러 구매 제안이 등록 될 수 있다.
+
+
+  ※ 댓글 등록 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "구매 제안이 등록되었습니다."
+  }
+  ```
+
 
 ### ● READ
+URL : `GET items/1/proposals?page&size=5&writer=jeeho.edu&password=qwerty1234`
+
+![image](https://github.com/likelion-backend-5th/MiniProject_Basic_LeeMinCheol/assets/89755903/df631ace-cbb2-4556-bffb-85cd43dd87bd)
+
+  구매 제안을 조회하는 URL 요청
+  - 해당 물품에 대해서 자기 자신이 등록한 구매 제안만을 조회 할 수 있다.
+  - 페이지 별로 조회 할 수 있고 페이지의 크기를 조절할 수 있다.
+  - 물풍 등록자는 모든 구매 제안을 확인할 수 있다.
+  
+
+  ※ 댓글 조회 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "content": [
+        {
+            "id": 1,
+            "suggestedPrice": 1000000,
+            "status": "제안"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 5,
+        "unpaged": false,
+        "paged": true
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "size": 5,
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "numberOfElements": 1,
+    "empty": false
+  }
+  ```
 
 ### ● UPDATE
+URL : `PUT items/{itemId}/proposals/{proposalId}`
 
+  
+  제안 내용을 수정하는 URL 요청 ( 댓글 내용 수정 URL 요청과 동일한 요청 )
+  - 제안 등록자이면 제안의 내용을 수정할 수 있다.
+  - 물품 등록자이면 특정 제안을 선택해서 수락/거절 할 수 있다. ( 제안의 상태를 제안에서 수락/거절 으로 바꾼다. )
+  - 제안 등록자는 제안의 상태가 수락 일 때 구매를 확정 지을 수 있다. ( 제안의 상태를 수락에서 확정으로 바꾼다. )
+  - 구매가 확정되면 나머지 제안의 상태는 거절이되고 물품의 상태는 판매완료가 된다.
+
+
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234",
+    "suggestedPrice": 1100000
+  }
+  ```
+
+  ※ 제안 내용 수정 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "제안이 수정되었습니다."
+  }
+  ```
+
+
+   #### ResquestBody
+  ```json
+  {
+    "writer": "lee.dev",
+    "password": "1qaz2wsx",
+    "status": "수락"
+  }
+  ```
+
+  ※ 제안 내용 수락/거절 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "제안의 상태가 변경되었습니다."
+  }
+  ```
+
+
+   #### ResquestBody
+  ```json
+   {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234",
+    "status": "확정"
+  }
+  ```
+
+  ※ 구매 확정 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "구매가 확정되었습니다."
+  }
+  ```
+  ```json
+  {
+    "content": [
+        {
+            "id": 1,
+            "suggestedPrice": 1000000,
+            "status": "확정"
+        },
+        {
+            "id": 2,
+            "suggestedPrice": 1000000,
+            "status": "거절"
+        },
+        {
+            "id": 3,
+            "suggestedPrice": 1000000,
+            "status": "거절"
+        },
+        {
+            "id": 4,
+            "suggestedPrice": 1000000,
+            "status": "거절"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 5,
+        "unpaged": false,
+        "paged": true
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 4,
+    "size": 5,
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "numberOfElements": 4,
+    "empty": false
+  }
+  ```
+
+  
 ### ● DELETE
+URL : `DELETE /items/{itemId}/proposals/{proposalId}`
+  
+  #### ResquestBody
+  ```json
+  {
+    "writer": "jeeho.edu",
+    "password": "qwerty1234"
+  }
+  ```
+
+
+  등록된 구매 제안을 삭제하는 URL 요청
+  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인 한 후 작성자만 삭제할 수 있도록한다.
+
+  
+  ※ 삭제 성공 시 결과 ( ResponseBody )
+  ```json
+  {
+    "message": "제안을 삭제했습니다."
+  }
+  ```
