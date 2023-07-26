@@ -5,6 +5,7 @@ import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.entity.CommentEntity;
 import com.example.mutsaMarket.entity.SalesItemEntity;
 import com.example.mutsaMarket.repositories.CommentRepository;
+import com.example.mutsaMarket.repositories.NegotiationRepository;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
     private final CommentRepository commentRepository;
+    private final NegotiationRepository negotiationRepository;
 
     public SalesItemDto registerItem(SalesItemDto salesItemDto){
         SalesItemEntity salesItemEntity = new SalesItemEntity();
@@ -167,6 +169,7 @@ public class SalesItemService {
 
         salesItemRepository.delete(entity);
         commentRepository.deleteAllByItemId(itemId);
+        negotiationRepository.deleteAllByItemId(itemId);
     }
 
     public boolean isValidUser(Optional<SalesItemEntity> optionalEntity, String writer, String password){
