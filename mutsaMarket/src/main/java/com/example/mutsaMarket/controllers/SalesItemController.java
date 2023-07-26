@@ -63,7 +63,7 @@ public class SalesItemController {
 
         service.updateItemImage(itemId, image,writer,password);
         ResponseObject response = new ResponseObject();
-        response.setMessage("물품이 수정되었습니다.");
+        response.setMessage("이미지가 등록되었습니다.");
 
         return ResponseEntity.ok(response);
     }
