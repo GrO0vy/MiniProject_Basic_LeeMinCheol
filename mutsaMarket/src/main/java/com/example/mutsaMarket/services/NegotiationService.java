@@ -120,29 +120,19 @@ public class NegotiationService {
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        List<NegotiationEntity> negotiationEntityList = negotiationRepository.findAllByItemId(itemId);
 
-        NegotiationEntity negotiationEntity = null;
+        String writer = negotiationDto.getWriter();
+        String password = negotiationDto.getPassword();
 
-        for(NegotiationEntity entity : negotiationEntityList){
-            if(proposalId == entity.getId()){
-                negotiationEntity = entity;
-                break;
-            }
-        }
+        Optional<NegotiationEntity> optionalEntity =
+                negotiationRepository.findAllByIdAndWriterAndPassword(proposalId, writer, password);
 
-        if(negotiationEntity.equals(null)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        else{
-            if(negotiationEntity.getWriter().equals(negotiationDto.getWriter())){
-                if(negotiationEntity.getPassword().equals(negotiationDto.getPassword())){
-                    negotiationRepository.delete(negotiationEntity);
-                }
-                else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+
+        if(!optionalEntity.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        NegotiationEntity negotiationEntity = optionalEntity.get();
+        negotiationRepository.delete(negotiationEntity);
     }
 
     public boolean isOwner(Integer itemId, String writer, String password){
