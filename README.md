@@ -7,6 +7,17 @@
 ## 물품 관리
 
 ### ● CREATE
+`POST /items`
+
+  ```json
+  {
+    "title": "중고 노트북 팝니다",
+    "description": "20129년 맥북 프로 13인치 모델입니다",
+    "minPriceWanted": 1000000,
+    "writer": "lee.dev",
+    "password": "1qaz2wsx"
+  }
+  ```
 
 ### ● READ
 
