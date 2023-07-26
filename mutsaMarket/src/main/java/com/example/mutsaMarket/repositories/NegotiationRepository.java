@@ -10,6 +10,6 @@ import java.util.List;
 public interface NegotiationRepository extends JpaRepository<NegotiationEntity, Integer> {
     Page<NegotiationEntity> findAllByItemId(Integer itemId, Pageable pageable);
     List<NegotiationEntity> findAllByItemId(Integer itemId);
-    Page<NegotiationEntity> findAllByItemIdAndWriter(Integer itemId, String writer, Pageable pageable);
+    Page<NegotiationEntity> findAllByItemIdAndWriterAndPassword(Integer itemId, String writer, String password, Pageable pageable);
     Page<NegotiationEntity> findAllByWriter(String writer, Pageable pageable);
 }

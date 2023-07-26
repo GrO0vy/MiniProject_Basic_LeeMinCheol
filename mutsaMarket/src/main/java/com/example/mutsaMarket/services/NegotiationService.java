@@ -47,31 +47,19 @@ public class NegotiationService {
         Page<NegotiationEntity> negotiationEntityPage;
         Page<NegotiationDto> negotiationDtoPage;
 
-        // 물품 등록자 정보 가져오기
-        SalesItemEntity ownerData = salesItemRepository.findById(itemId).get();
-        String ownerId = ownerData.getWriter();
-        String ownerPassword = ownerData.getPassword();
 
-        // 물품 등록자와 입력 받은 아이디가 같고
-        if(writer.equals(ownerId)){
-            // 물품 등록자의 패스워드가 같으면
-            if(password.equals(ownerPassword)){
-                // 해당 물품의 모든 제안을 가져와서 리턴
-                negotiationEntityPage = negotiationRepository.findAllByItemId(itemId, pageable);
-
-                if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
-                negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
-                return negotiationDtoPage;
-            }
-            else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        // 물품 등록자이면
+        if(isOwner(itemId, writer, password)){
+            negotiationEntityPage = negotiationRepository.findAllByItemId(itemId, pageable);
+            negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
+            return negotiationDtoPage;
         }
         // 물품 등록자가 아니면
-        else{
-            // 입력 받은 아이디로 등록된 제안 가져옴
-            negotiationEntityPage = negotiationRepository.findAllByItemIdAndWriter(itemId, writer, pageable);
+        else {
+            // 입력 받은 아이디와 패스워드가 일치하는 제안 가져옴
+            negotiationEntityPage = negotiationRepository.findAllByItemIdAndWriterAndPassword(itemId, writer, password, pageable);
             // 비어있으면 BAD Request
-            if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
             negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
 
@@ -163,5 +151,13 @@ public class NegotiationService {
             }
             else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public boolean isOwner(Integer itemId, String writer, String password){
+        SalesItemEntity entity = salesItemRepository.findById(itemId).get();
+        String ownerName = entity.getWriter();
+        String ownerPassword = entity.getPassword();
+
+        return ownerName.equals(writer) && ownerPassword.equals(password);
     }
 }
