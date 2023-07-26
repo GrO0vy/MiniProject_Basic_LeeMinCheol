@@ -31,8 +31,8 @@ public class SalesItemController {
     }
 
     @GetMapping
-    public Page<SalesItemDto> readAll(@RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                                      @RequestParam(value = "size", defaultValue = "10") Integer pageSize
+    public Page<SalesItemDto> readAll(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                      @RequestParam(value = "size", defaultValue = Integer.MAX_VALUE + "" ) Integer pageSize
                                       )
     {
         return service.readItemAll(pageNumber, pageSize);

@@ -30,14 +30,14 @@ public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
     private final CommentRepository commentRepository;
 
-    public SalesItemDto registerItem(SalesItemDto salesItemDao){
+    public SalesItemDto registerItem(SalesItemDto salesItemDto){
         SalesItemEntity salesItemEntity = new SalesItemEntity();
 
-        salesItemEntity.setTitle(salesItemDao.getTitle());
-        salesItemEntity.setDescription(salesItemDao.getDescription());
-        salesItemEntity.setMinPriceWanted(salesItemDao.getMinPriceWanted());
-        salesItemEntity.setWriter(salesItemDao.getWriter());
-        salesItemEntity.setPassword(salesItemDao.getPassword());
+        salesItemEntity.setTitle(salesItemDto.getTitle());
+        salesItemEntity.setDescription(salesItemDto.getDescription());
+        salesItemEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
+        salesItemEntity.setWriter(salesItemDto.getWriter());
+        salesItemEntity.setPassword(salesItemDto.getPassword());
 
         salesItemEntity = salesItemRepository.save(salesItemEntity);
 
