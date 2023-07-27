@@ -1,7 +1,9 @@
 package com.example.mutsaMarket.services;
 
 
+import com.example.mutsaMarket.dto.UserLoginDto;
 import com.example.mutsaMarket.entity.UserEntity;
+import com.example.mutsaMarket.jwt.JwtUtils;
 import com.example.mutsaMarket.repositories.UserRepository;
 import com.example.mutsaMarket.userManage.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsManager{
     private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -36,6 +39,24 @@ public class UserService implements UserDetailsManager{
         entity.setAddress(((CustomUserDetails) user).getAddress());
 
         userRepository.save(entity);
+    }
+
+    public String login(UserLoginDto userLoginDto){
+        String inputId = userLoginDto.getUserId();
+        String inputPw = userLoginDto.getUserPassword();
+
+        if(!userExists(inputId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        UserDetails user = loadUserByUsername(inputId);
+
+        if(!passwordEncoder.matches(inputPw, user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+
+        String token = jwtUtils.generateToken(user);
+
+        return token;
     }
 
     @Override

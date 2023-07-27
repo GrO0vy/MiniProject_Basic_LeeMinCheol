@@ -1,5 +1,6 @@
 package com.example.mutsaMarket.controllers;
 
+import com.example.mutsaMarket.dto.UserLoginDto;
 import com.example.mutsaMarket.dto.UserRegisterDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.UserService;
@@ -39,5 +40,12 @@ public class UserController {
             response.setMessage("회원가입이 완료되었습니다.");
             return ResponseEntity.ok(response);
         }
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity login(@RequestBody UserLoginDto userLoginDto){
+        String token = userService.login(userLoginDto);
+
+        return ResponseEntity.ok(token);
     }
 }
