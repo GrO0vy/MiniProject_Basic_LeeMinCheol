@@ -8,6 +8,7 @@ import com.example.mutsaMarket.userManage.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +48,16 @@ public class UserController {
         String token = userService.login(userLoginDto);
 
         return ResponseEntity.ok(token);
+    }
+
+    @GetMapping("/get-info")
+    public void profile(Authentication authentication){
+        String username = authentication.getName();
+        CustomUserDetails user = (CustomUserDetails) userService.loadUserByUsername(username);
+        log.info(user.getUsername());
+        log.info(user.getPassword());
+        log.info(user.getPhone());
+        log.info(user.getEmail());
+        log.info(user.getAddress());
     }
 }
