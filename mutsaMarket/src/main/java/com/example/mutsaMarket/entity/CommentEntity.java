@@ -11,12 +11,14 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
-    private Integer itemId;
-    @Column(nullable = false)
     private String writer;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     private String content;
     private String reply;
+
+    @ManyToOne
+    @JoinColumn(name = "itemId", nullable = false)
+    private SalesItemEntity salesItem;
 }

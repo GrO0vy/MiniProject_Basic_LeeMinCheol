@@ -27,10 +27,15 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         CommentEntity entity = new CommentEntity();
-        entity.setItemId(itemId);
+        //entity.setItemId(itemId);
         entity.setWriter(commentDto.getWriter());
         entity.setPassword(commentDto.getPassword());
         entity.setContent(commentDto.getContent());
+
+        Optional<SalesItemEntity> optionalSalesItem = salesItemRepository.findById(itemId);
+        SalesItemEntity salesItem = optionalSalesItem.get();
+
+        entity.setSalesItem(salesItem);
 
         entity = commentRepository.save(entity);
 
@@ -39,7 +44,15 @@ public class CommentService {
 
     public Page<CommentDto> readCommentAll(Integer itemId, Integer pageNumber, Integer pageSize){
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<CommentEntity> commentEntityPage = commentRepository.findAllByItemId(itemId, pageable);
+
+        Optional<SalesItemEntity> optionalSalesItem = salesItemRepository.findById(itemId);
+
+        if(!optionalSalesItem.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        SalesItemEntity salesItem = optionalSalesItem.get();
+
+        Page<CommentEntity> commentEntityPage = commentRepository.findAllBySalesItem(salesItem, pageable);
 
         Page<CommentDto> commentDtoPage = commentEntityPage.map(CommentDto::fromEntity);
 

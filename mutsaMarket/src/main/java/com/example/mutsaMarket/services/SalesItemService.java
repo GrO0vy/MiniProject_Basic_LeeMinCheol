@@ -167,8 +167,8 @@ public class SalesItemService {
         }
 
 
+        commentRepository.deleteAllBySalesItem(entity);
         salesItemRepository.delete(entity);
-        commentRepository.deleteAllByItemId(itemId);
         negotiationRepository.deleteAllByItemId(itemId);
     }
 
