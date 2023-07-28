@@ -27,7 +27,6 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         CommentEntity entity = new CommentEntity();
-        //entity.setItemId(itemId);
         entity.setWriter(commentDto.getWriter());
         entity.setPassword(commentDto.getPassword());
         entity.setContent(commentDto.getContent());

@@ -168,8 +168,8 @@ public class SalesItemService {
 
 
         commentRepository.deleteAllBySalesItem(entity);
+        negotiationRepository.deleteAllBySalesItem(entity);
         salesItemRepository.delete(entity);
-        negotiationRepository.deleteAllByItemId(itemId);
     }
 
     public boolean isValidUser(Optional<SalesItemEntity> optionalEntity, String writer, String password){

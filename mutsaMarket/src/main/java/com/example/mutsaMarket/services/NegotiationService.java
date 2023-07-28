@@ -27,11 +27,16 @@ public class NegotiationService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         NegotiationEntity entity = new NegotiationEntity();
-        entity.setItemId(itemId);
+        //entity.setItemId(itemId);
         entity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
         entity.setStatus("제안");
         entity.setWriter(negotiationDto.getWriter());
         entity.setPassword(negotiationDto.getPassword());
+
+        Optional<SalesItemEntity> optionalSalesItem = salesItemRepository.findById(itemId);
+        SalesItemEntity salesItem = optionalSalesItem.get();
+
+        entity.setSalesItem(salesItem);
 
         entity = negotiationRepository.save(entity);
 
@@ -42,6 +47,9 @@ public class NegotiationService {
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        // 물품 정보
+        SalesItemEntity salesItem = salesItemRepository.findById(itemId).get();
+
         // 페이지 정보 설정
         Pageable pageable = PageRequest.of(page, size);
         Page<NegotiationEntity> negotiationEntityPage;
@@ -50,14 +58,14 @@ public class NegotiationService {
 
         // 물품 등록자이면
         if(isOwner(itemId, writer, password)){
-            negotiationEntityPage = negotiationRepository.findAllByItemId(itemId, pageable);
+            negotiationEntityPage = negotiationRepository.findAllBySalesItem(salesItem, pageable);
             negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
             return negotiationDtoPage;
         }
         // 물품 등록자가 아니면
         else {
             // 입력 받은 아이디와 패스워드가 일치하는 제안 가져옴
-            negotiationEntityPage = negotiationRepository.findAllByItemIdAndWriterAndPassword(itemId, writer, password, pageable);
+            negotiationEntityPage = negotiationRepository.findAllBySalesItemAndWriterAndPassword(salesItem, writer, password, pageable);
             // 비어있으면 BAD Request
             if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
@@ -99,11 +107,11 @@ public class NegotiationService {
             }
             else if(negotiationEntity.getStatus().equals("수락") && status.equals("확정")){
                 negotiationEntity.setStatus("확정");
-                SalesItemEntity salesItemEntity = salesItemRepository.findById(itemId).get();
-                salesItemEntity.setStatus("판매 완료");
+                SalesItemEntity salesItem = salesItemRepository.findById(itemId).get();
+                salesItem.setStatus("판매 완료");
                 negotiationRepository.save(negotiationEntity);
-                salesItemRepository.save(salesItemEntity);
-                List<NegotiationEntity> entities = negotiationRepository.findAllByItemIdAndIdNot(itemId, proposalId);
+                salesItemRepository.save(salesItem);
+                List<NegotiationEntity> entities = negotiationRepository.findAllBySalesItemAndIdNot(salesItem, proposalId);
                 for(NegotiationEntity entity: entities){
                     entity.setStatus("거절");
                     negotiationRepository.save(entity);
