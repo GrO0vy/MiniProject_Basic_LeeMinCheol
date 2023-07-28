@@ -6,6 +6,7 @@ import com.example.mutsaMarket.entity.UserEntity;
 import com.example.mutsaMarket.jwt.JwtUtils;
 import com.example.mutsaMarket.repositories.UserRepository;
 import com.example.mutsaMarket.userManage.CustomUserDetails;
+import com.example.mutsaMarket.userManage.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,36 +20,25 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsManager{
+public class UserService{
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsManager manager;
 
-    @Override
     public void createUser(UserDetails user) {
-        if(userExists(user.getUsername()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-        UserEntity entity = new UserEntity();
-        ((CustomUserDetails)user).setId(entity.getId());
-
-        entity.setUserId(user.getUsername());
-        entity.setUserPassword(user.getPassword());
-        entity.setPhone(((CustomUserDetails) user).getPhone());
-        entity.setEmail(((CustomUserDetails) user).getEmail());
-        entity.setAddress(((CustomUserDetails) user).getAddress());
-
-        userRepository.save(entity);
+        // CustomUserDetailsManager 에서 처리
+        manager.createUser(user);
     }
 
     public String login(UserLoginDto userLoginDto){
         String inputId = userLoginDto.getUserId();
         String inputPw = userLoginDto.getUserPassword();
 
-        if(!userExists(inputId))
+        if(!manager.userExists(inputId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        UserDetails user = loadUserByUsername(inputId);
+        UserDetails user = manager.loadUserByUsername(inputId);
 
         if(!passwordEncoder.matches(inputPw, user.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -59,35 +49,8 @@ public class UserService implements UserDetailsManager{
         return token;
     }
 
-    @Override
-    public void updateUser(UserDetails user) {
-
+    public UserDetails profile(String userId){
+        return manager.loadUserByUsername(userId);
     }
 
-    @Override
-    public void deleteUser(String username) {
-
-    }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        return userRepository.existsByUserId(username);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalEntity = userRepository.findByUserId(username);
-
-        if(!optionalEntity.isPresent())
-            throw new UsernameNotFoundException(username);
-
-        UserEntity entity = optionalEntity.get();
-
-        return CustomUserDetails.fromEntity(entity);
-    }
 }

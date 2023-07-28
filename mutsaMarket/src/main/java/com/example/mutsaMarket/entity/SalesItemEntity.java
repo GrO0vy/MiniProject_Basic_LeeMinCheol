@@ -30,4 +30,7 @@ public class SalesItemEntity {
 
     @OneToMany(mappedBy = "salesItem")
     private List<NegotiationEntity> negotiations;
+
+    @ManyToOne
+    private UserEntity user;
 }

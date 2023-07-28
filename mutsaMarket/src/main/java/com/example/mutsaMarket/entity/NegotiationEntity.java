@@ -18,5 +18,6 @@ public class NegotiationEntity {
     private String password;
 
     @ManyToOne
+    @JoinColumn(name = "itemId", nullable = false)
     private SalesItemEntity salesItem;
 }

@@ -53,7 +53,7 @@ public class UserController {
     @GetMapping("/get-info")
     public void profile(Authentication authentication){
         String username = authentication.getName();
-        CustomUserDetails user = (CustomUserDetails) userService.loadUserByUsername(username);
+        CustomUserDetails user = (CustomUserDetails) userService.profile(username);
         log.info(user.getUsername());
         log.info(user.getPassword());
         log.info(user.getPhone());

@@ -3,6 +3,8 @@ package com.example.mutsaMarket.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -20,4 +22,7 @@ public class UserEntity {
     private String phone;
     private String email;
     private String address;
+
+    @OneToMany(mappedBy = "user")
+    private List<SalesItemEntity> salesItems;
 }
