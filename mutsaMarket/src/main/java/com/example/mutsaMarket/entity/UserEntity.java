@@ -26,6 +26,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<SalesItemEntity> salesItems;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<CommentEntity> comments;
 }

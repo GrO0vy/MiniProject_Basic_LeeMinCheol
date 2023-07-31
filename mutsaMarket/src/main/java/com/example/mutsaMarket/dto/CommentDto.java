@@ -9,8 +9,6 @@ import lombok.Data;
 public class CommentDto {
     private Integer id;
     private Integer itemId;
-    private String writer;
-    private String password;
     private String content;
     private String reply;
 
