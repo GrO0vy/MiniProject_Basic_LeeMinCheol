@@ -25,4 +25,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<SalesItemEntity> salesItems;
+
+    @OneToMany
+    private List<CommentEntity> comments;
 }
