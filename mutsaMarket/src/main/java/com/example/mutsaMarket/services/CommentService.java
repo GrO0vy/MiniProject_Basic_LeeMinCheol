@@ -108,8 +108,8 @@ public class CommentService {
     private boolean isItemOwner(Integer itemId, CommentDto commentDto){
         SalesItemEntity owner = salesItemRepository.findById(itemId).get();
 
-        String ownerName = owner.getWriter();
-        String ownerPassword = owner.getPassword();
+        String ownerName = owner.getUser().getUserId();
+        String ownerPassword = owner.getUser().getUserPassword();
 
         return ownerName.equals(commentDto.getWriter()) && ownerPassword.equals(commentDto.getPassword());
     }

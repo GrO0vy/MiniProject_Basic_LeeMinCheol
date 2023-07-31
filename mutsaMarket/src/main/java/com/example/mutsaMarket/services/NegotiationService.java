@@ -145,8 +145,8 @@ public class NegotiationService {
 
     public boolean isOwner(Integer itemId, String writer, String password){
         SalesItemEntity entity = salesItemRepository.findById(itemId).get();
-        String ownerName = entity.getWriter();
-        String ownerPassword = entity.getPassword();
+        String ownerName = entity.getUser().getUserId();
+        String ownerPassword = entity.getUser().getUserPassword();
 
         return ownerName.equals(writer) && ownerPassword.equals(password);
     }

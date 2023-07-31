@@ -3,6 +3,7 @@ package com.example.mutsaMarket.controllers;
 import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.SalesItemService;
+import com.example.mutsaMarket.userManage.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,10 +24,11 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/items")
 public class SalesItemController {
     private final SalesItemService service;
+    private final CustomUserDetailsManager manager;
 
     @PostMapping
-    public ResponseEntity register(@RequestBody SalesItemDto salesItemDto){
-        service.registerItem(salesItemDto);
+    public ResponseEntity register(@RequestBody SalesItemDto salesItemDto, Authentication authentication){
+        service.registerItem(salesItemDto, getLoginUser(authentication));
         ResponseObject response = new ResponseObject();
         response.setMessage("등록이 완료되었습니다");
         return ResponseEntity.ok(response);
@@ -45,9 +49,8 @@ public class SalesItemController {
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity update(@PathVariable("itemId") Integer itemId, @RequestBody SalesItemDto salesItemDto){
-
-        service.updateItem(itemId, salesItemDto);
+    public ResponseEntity update(@PathVariable("itemId") Integer itemId, @RequestBody SalesItemDto salesItemDto, Authentication authentication){
+        service.updateItem(itemId, salesItemDto, getLoginUser(authentication));
         ResponseObject response = new ResponseObject();
         response.setMessage("물품이 수정되었습니다");
 
@@ -57,11 +60,9 @@ public class SalesItemController {
     @PutMapping(value = "/{itemId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity updateImage(@PathVariable("itemId") Integer itemId,
                                       @RequestParam("image") MultipartFile image,
-                                      @RequestParam("writer") String writer,
-                                      @RequestParam("password") String password
+                                      Authentication authentication
                                       ){
-
-        service.updateItemImage(itemId, image,writer,password);
+        service.updateItemImage(itemId, image,getLoginUser(authentication));
         ResponseObject response = new ResponseObject();
         response.setMessage("이미지가 등록되었습니다.");
 
@@ -69,9 +70,12 @@ public class SalesItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity delete(@PathVariable("itemId") Integer itemId, @RequestBody SalesItemDto salesItemDto){
+    public ResponseEntity delete(
+            @PathVariable("itemId") Integer itemId,
+            Authentication authentication
+    ){
 
-        service.deleteItem(itemId, salesItemDto);
+        service.deleteItem(itemId, getLoginUser(authentication));
         ResponseObject response = new ResponseObject();
         response.setMessage("물품을 삭제했습니다.");
         return ResponseEntity.ok().body(response);
@@ -85,5 +89,10 @@ public class SalesItemController {
         response.setMessage("필수 항목을 모두 입력해주세요");
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    public UserDetails getLoginUser(Authentication authentication){
+        String user = ((UserDetails)authentication.getPrincipal()).getUsername();
+        return manager.loadUserByUsername(user);
     }
 }

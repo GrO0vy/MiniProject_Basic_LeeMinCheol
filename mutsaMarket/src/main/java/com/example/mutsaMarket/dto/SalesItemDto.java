@@ -13,8 +13,6 @@ public class SalesItemDto {
     private String imageUrl;
     private Integer minPriceWanted;
     private String status;
-    private String writer;
-    private String password;
 
     public static SalesItemDto fromEntity(SalesItemEntity entity){
         SalesItemDto salesItemDao = new SalesItemDto();

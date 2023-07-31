@@ -20,10 +20,6 @@ public class SalesItemEntity {
     @Column(nullable = false)
     private Integer minPriceWanted;
     private String status = "판매중";
-    @Column(nullable = false)
-    private String writer;
-    @Column(nullable = false)
-    private String password;
 
     @OneToMany(mappedBy = "salesItem")
     private List<CommentEntity> comments;
@@ -32,5 +28,6 @@ public class SalesItemEntity {
     private List<NegotiationEntity> negotiations;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private UserEntity user;
 }
