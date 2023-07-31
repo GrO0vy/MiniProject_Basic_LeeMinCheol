@@ -13,11 +13,14 @@ public class NegotiationEntity {
     @Column(nullable = false)
     private Integer suggestedPrice;
     private String status;
-    @Column(nullable = false)
-    private String writer;
-    private String password;
+//    @Column(nullable = false)
+//    private String writer;
+//    private String password;
 
     @ManyToOne
     @JoinColumn(name = "itemId", nullable = false)
     private SalesItemEntity salesItem;
+
+    @ManyToOne
+    private UserEntity user;
 }

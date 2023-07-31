@@ -11,8 +11,6 @@ public class NegotiationDto {
     private Integer itemId;
     private Integer suggestedPrice;
     private String status;
-    private String writer;
-    private String password;
 
     public static NegotiationDto fromEntity(NegotiationEntity entity){
         NegotiationDto negotiationDto = new NegotiationDto();

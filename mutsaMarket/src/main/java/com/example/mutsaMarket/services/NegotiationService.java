@@ -3,8 +3,11 @@ package com.example.mutsaMarket.services;
 import com.example.mutsaMarket.dto.NegotiationDto;
 import com.example.mutsaMarket.entity.NegotiationEntity;
 import com.example.mutsaMarket.entity.SalesItemEntity;
+import com.example.mutsaMarket.entity.UserEntity;
 import com.example.mutsaMarket.repositories.NegotiationRepository;
 import com.example.mutsaMarket.repositories.SalesItemRepository;
+import com.example.mutsaMarket.repositories.UserRepository;
+import com.example.mutsaMarket.userManage.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,29 +24,34 @@ import java.util.Optional;
 public class NegotiationService {
     private final NegotiationRepository negotiationRepository;
     private final SalesItemRepository salesItemRepository;
+    private final UserRepository userRepository;
 
-    public NegotiationDto registerNegotiation(Integer itemId, NegotiationDto negotiationDto){
+    public NegotiationDto registerNegotiation(Integer itemId, NegotiationDto negotiationDto, CustomUserDetails user){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        if(user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
         NegotiationEntity entity = new NegotiationEntity();
-        //entity.setItemId(itemId);
+
         entity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
         entity.setStatus("제안");
-        entity.setWriter(negotiationDto.getWriter());
-        entity.setPassword(negotiationDto.getPassword());
 
         Optional<SalesItemEntity> optionalSalesItem = salesItemRepository.findById(itemId);
         SalesItemEntity salesItem = optionalSalesItem.get();
 
         entity.setSalesItem(salesItem);
 
+        UserEntity userEntity = userRepository.findByUserId(user.getUsername()).get();
+
+        entity.setUser(userEntity);
+
         entity = negotiationRepository.save(entity);
 
         return NegotiationDto.fromEntity(entity);
     }
 
-    public Page<NegotiationDto> readNegotiationAll(Integer itemId, Integer page, Integer size, String writer, String password){
+    public Page<NegotiationDto> readNegotiationAll(Integer itemId, Integer page, Integer size, CustomUserDetails user){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
@@ -56,6 +64,11 @@ public class NegotiationService {
         Page<NegotiationDto> negotiationDtoPage;
 
 
+        String writer = user.getUsername();
+        String password = user.getPassword();
+        UserEntity userEntity = userRepository.findByUserId(writer).get();
+
+
         // 물품 등록자이면
         if(isOwner(itemId, writer, password)){
             negotiationEntityPage = negotiationRepository.findAllBySalesItem(salesItem, pageable);
@@ -65,7 +78,7 @@ public class NegotiationService {
         // 물품 등록자가 아니면
         else {
             // 입력 받은 아이디와 패스워드가 일치하는 제안 가져옴
-            negotiationEntityPage = negotiationRepository.findAllBySalesItemAndWriterAndPassword(salesItem, writer, password, pageable);
+            negotiationEntityPage = negotiationRepository.findAllBySalesItemAndUser(salesItem, userEntity, pageable);
             // 비어있으면 BAD Request
             if(negotiationEntityPage.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
@@ -75,15 +88,15 @@ public class NegotiationService {
         }
     }
 
-    public String updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+    public String updateNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto, CustomUserDetails user){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         if(!negotiationRepository.existsById(proposalId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        String proposalName = negotiationDto.getWriter();
-        String proposalPassword = negotiationDto.getPassword();
+        String proposalName = user.getUsername();
+        String proposalPassword = user.getPassword();
         Integer suggestedPrice = negotiationDto.getSuggestedPrice();
         String status = negotiationDto.getStatus();
 
@@ -124,16 +137,21 @@ public class NegotiationService {
         else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    public void deleteNegotiation(Integer itemId, Integer proposalId, NegotiationDto negotiationDto){
+    public void deleteNegotiation(Integer itemId, Integer proposalId, CustomUserDetails user){
         if(!salesItemRepository.existsById(itemId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
 
-        String writer = negotiationDto.getWriter();
-        String password = negotiationDto.getPassword();
+        String writer = user.getUsername();
+        String password = user.getPassword();
+
+        if(!isValidUser(proposalId, writer, password))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        UserEntity userEntity = userRepository.findByUserId(writer).get();
 
         Optional<NegotiationEntity> optionalEntity =
-                negotiationRepository.findAllByIdAndWriterAndPassword(proposalId, writer, password);
+                negotiationRepository.findAllByIdAndUser(proposalId, userEntity);
 
 
         if(!optionalEntity.isPresent())
@@ -154,6 +172,6 @@ public class NegotiationService {
     public boolean isValidUser(Integer proposalId, String writer, String password){
         NegotiationEntity entity = negotiationRepository.findById(proposalId).get();
 
-        return entity.getWriter().equals(writer) && entity.getPassword().equals(password);
+        return entity.getUser().getUserId().equals(writer) && entity.getUser().getUserPassword().equals(password);
     }
 }
