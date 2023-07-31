@@ -33,8 +33,6 @@ public class CommentService {
         if(user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         CommentEntity entity = new CommentEntity();
-//        entity.setWriter(commentDto.getWriter());
-//        entity.setPassword(commentDto.getPassword());
 
         UserEntity userEntity = userRepository.findByUserId(user.getUsername()).get();
         entity.setUser(userEntity);

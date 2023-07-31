@@ -28,7 +28,7 @@ public class CommentController {
             @RequestBody CommentDto commentDto,
             Authentication authentication)
     {
-        service.registerComment(itemId, commentDto, (CustomUserDetails) getLoginUser(authentication));
+        service.registerComment(itemId, commentDto, getLoginUser(authentication));
 
         ResponseObject response = new ResponseObject();
         response.setMessage("댓글이 등록되었습니다.");
@@ -50,7 +50,7 @@ public class CommentController {
                               @RequestBody CommentDto commentDto,
                                  Authentication authentication)
     {
-        String message = service.updateComment(itemId, commentId, commentDto, (CustomUserDetails) getLoginUser(authentication));
+        String message = service.updateComment(itemId, commentId, commentDto, getLoginUser(authentication));
 
         ResponseObject response = new ResponseObject();
         response.setMessage(message);
@@ -63,7 +63,7 @@ public class CommentController {
                                  @PathVariable("commentId") Integer commentId,
                                  Authentication authentication)
     {
-        service.deleteComment(itemId, commentId, (CustomUserDetails) getLoginUser(authentication));
+        service.deleteComment(itemId, commentId, getLoginUser(authentication));
 
         ResponseObject response = new ResponseObject();
         response.setMessage("댓글을 삭제했습니다.");
@@ -81,8 +81,8 @@ public class CommentController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    public UserDetails getLoginUser(Authentication authentication){
+    public CustomUserDetails getLoginUser(Authentication authentication){
         String user = ((UserDetails)authentication.getPrincipal()).getUsername();
-        return manager.loadUserByUsername(user);
+        return (CustomUserDetails) (manager.loadUserByUsername(user));
     }
 }

@@ -22,5 +22,6 @@ public class NegotiationEntity {
     private SalesItemEntity salesItem;
 
     @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
     private UserEntity user;
 }

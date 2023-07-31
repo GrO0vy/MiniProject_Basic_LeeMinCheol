@@ -37,7 +37,7 @@ public class SalesItemService {
     private final UserRepository userRepository;
     private final CustomUserDetailsManager manager;
 
-    public SalesItemDto registerItem(SalesItemDto salesItemDto, UserDetails user) {
+    public SalesItemDto registerItem(SalesItemDto salesItemDto, CustomUserDetails user) {
         if (user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         SalesItemEntity salesItemEntity = new SalesItemEntity();
@@ -80,7 +80,7 @@ public class SalesItemService {
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    public SalesItemDto updateItem(Integer itemId, SalesItemDto salesItemDto, UserDetails user) {
+    public SalesItemDto updateItem(Integer itemId, SalesItemDto salesItemDto, CustomUserDetails user) {
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
         if (!optionalEntity.isPresent())
@@ -100,15 +100,13 @@ public class SalesItemService {
         salesItemEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
         UserEntity userEntity = userRepository.findByUserId(user.getUsername()).get();
         salesItemEntity.setUser(userEntity);
-//        salesItemEntity.setWriter(salesItemDto.getWriter());
-//        salesItemEntity.setPassword(salesItemDto.getPassword());
 
         salesItemEntity = salesItemRepository.save(salesItemEntity);
 
         return SalesItemDto.fromEntity(salesItemEntity);
     }
 
-    public SalesItemDto updateItemImage(Integer itemId, MultipartFile image, UserDetails user) {
+    public SalesItemDto updateItemImage(Integer itemId, MultipartFile image, CustomUserDetails user) {
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
         if (!optionalEntity.isPresent())
@@ -149,7 +147,7 @@ public class SalesItemService {
         return SalesItemDto.fromEntity(salesItemEntity);
     }
 
-    public void deleteItem(Integer itemId, UserDetails user) {
+    public void deleteItem(Integer itemId, CustomUserDetails user) {
         Optional<SalesItemEntity> optionalEntity = salesItemRepository.findById(itemId);
 
         if (!optionalEntity.isPresent())

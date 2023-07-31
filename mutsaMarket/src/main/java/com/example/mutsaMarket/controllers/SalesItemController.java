@@ -3,6 +3,7 @@ package com.example.mutsaMarket.controllers;
 import com.example.mutsaMarket.dto.SalesItemDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.SalesItemService;
+import com.example.mutsaMarket.userManage.CustomUserDetails;
 import com.example.mutsaMarket.userManage.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,8 +92,8 @@ public class SalesItemController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    public UserDetails getLoginUser(Authentication authentication){
+    public CustomUserDetails getLoginUser(Authentication authentication){
         String user = ((UserDetails)authentication.getPrincipal()).getUsername();
-        return manager.loadUserByUsername(user);
+        return (CustomUserDetails) (manager.loadUserByUsername(user));
     }
 }
