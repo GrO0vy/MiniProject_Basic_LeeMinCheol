@@ -5,11 +5,16 @@ import com.example.mutsaMarket.dto.UserRegisterDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.UserService;
 import com.example.mutsaMarket.userManage.CustomUserDetails;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +26,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody UserRegisterDto userRegisterDto){
+    public ResponseEntity register(@Valid @RequestBody UserRegisterDto userRegisterDto){
         ResponseObject response = new ResponseObject();
 
         if(!userRegisterDto.getUserPassword().equals(userRegisterDto.getPasswordCheck())) {
@@ -44,8 +49,9 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity login(@RequestBody UserLoginDto userLoginDto){
-        String token = userService.login(userLoginDto);
+    public ResponseEntity login(@NotBlank @RequestParam("inputId") String inputId,
+                                @NotBlank @RequestParam("inputPw") String inputPw){
+        String token = userService.login(inputId, inputPw);
 
         return ResponseEntity.ok(token);
     }
@@ -59,5 +65,16 @@ public class UserController {
         log.info(user.getPhone());
         log.info(user.getEmail());
         log.info(user.getAddress());
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity dataIntegrityViolationError(Exception exception){
+        log.error("모든 항목을 입력하지 않음");
+
+        ResponseObject response = new ResponseObject();
+        response.setMessage("필수 항목을 모두 입력해주세요");
+
+        return ResponseEntity.badRequest().body(response);
     }
 }

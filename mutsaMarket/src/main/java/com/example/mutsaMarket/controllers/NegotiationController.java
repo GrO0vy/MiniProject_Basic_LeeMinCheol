@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -75,8 +76,8 @@ public class NegotiationController {
         return ResponseEntity.ok(response);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity dataIntegrityViolationError(DataIntegrityViolationException exception){
+    @ExceptionHandler({DataIntegrityViolationException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity dataIntegrityViolationError(Exception exception){
         log.error("모든 항목을 입력하지 않음");
 
         ResponseObject response = new ResponseObject();
