@@ -5,6 +5,37 @@
     <title>글 쓰기</title>
 </head>
 <body>
-
+    제목: <input id = "title">
+    <br>
+    내용: <textarea id = "description"></textarea>
+    <br>
+    제시금액: <input id = "minPriceWanted">
+    <br>
+    <button id = "completeButton">작성완료</button>
 </body>
+<script>
+    document.getElementById("completeButton").addEventListener("click", complete)
+
+    function complete(){
+        let token = "Bearer " + localStorage.getItem("token");
+
+        fetch("/items",{
+            method: "post",
+            headers:{"content-type":  "application/json",
+                    "Authorization": token},
+            body: JSON.stringify({
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value,
+                minPriceWanted: document.getElementById("minPriceWanted").value,
+            })
+        })
+            .then(function (response){
+                if(response.ok) {
+                    alert("게시글이 등록되었습니다.")
+                    window.history.back()
+                }
+                else alert("서버 오류")
+            })
+    }
+</script>
 </html>
