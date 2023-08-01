@@ -37,7 +37,7 @@ public class CommentController {
     }
 
     @GetMapping
-    public Page<CommentDto> readOne(@PathVariable("itemId") Integer itemId,
+    public Page<CommentDto> readAll(@PathVariable("itemId") Integer itemId,
                                     @RequestParam(value= "page", defaultValue = "0") Integer pageNumber,
                                     @RequestParam(value= "size", defaultValue = "25") Integer pageSize)
     {

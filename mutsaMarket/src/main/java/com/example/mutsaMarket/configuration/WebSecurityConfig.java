@@ -22,8 +22,12 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                 authHttp -> authHttp
-                        .requestMatchers("/users/register","/users/login")
+                        .requestMatchers(
+                                "/items","/items/{itemId}",
+                                "/items/{itemId}/comments/{commentId}")
                         .permitAll()
+                        .requestMatchers("/users/register", "/users/login")
+                        .anonymous()
                         .anyRequest()
                         .authenticated()
                 )
