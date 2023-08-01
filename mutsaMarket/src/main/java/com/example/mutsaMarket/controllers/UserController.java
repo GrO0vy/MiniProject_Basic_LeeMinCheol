@@ -1,6 +1,5 @@
 package com.example.mutsaMarket.controllers;
 
-import com.example.mutsaMarket.dto.UserLoginDto;
 import com.example.mutsaMarket.dto.UserRegisterDto;
 import com.example.mutsaMarket.responses.ResponseObject;
 import com.example.mutsaMarket.services.UserService;
