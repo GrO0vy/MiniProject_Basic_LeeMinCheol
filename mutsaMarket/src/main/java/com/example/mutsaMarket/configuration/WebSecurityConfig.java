@@ -24,9 +24,10 @@ public class WebSecurityConfig {
                 authHttp -> authHttp
                         .requestMatchers(
                                 "/items","/items/{itemId}",
-                                "/items/{itemId}/comments/{commentId}")
+                                "/items/{itemId}/comments/{commentId}","/")
                         .permitAll()
-                        .requestMatchers("/users/register", "/users/login")
+                        .requestMatchers("/users/register", "/users/login",
+                                "/form/**")
                         .anonymous()
                         .anyRequest()
                         .authenticated()

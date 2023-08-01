@@ -1,18 +1,12 @@
 package com.example.mutsaMarket.services;
 
-
-import com.example.mutsaMarket.dto.UserLoginDto;
-import com.example.mutsaMarket.entity.UserEntity;
 import com.example.mutsaMarket.jwt.JwtUtils;
 import com.example.mutsaMarket.repositories.UserRepository;
-import com.example.mutsaMarket.userManage.CustomUserDetails;
 import com.example.mutsaMarket.userManage.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,10 +25,7 @@ public class UserService{
         manager.createUser(user);
     }
 
-    public String login(UserLoginDto userLoginDto){
-        String inputId = userLoginDto.getUserId();
-        String inputPw = userLoginDto.getUserPassword();
-
+    public String login(String inputId, String inputPw){
         if(!manager.userExists(inputId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 

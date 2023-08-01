@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+    아이디: <input id = "userId">
+    <br>
+    비밀번호: <input id = "userPassword">
+    <br>
+    비밀번호 확인: <input id = "passwordCheck">
+    <br>
+    연락처: <input id = "phone">
+    <br>
+    이메일: <input id = "email">
+    <br>
+    주소: <input id = "address">
+    <br>
+    <button id = "registerButton">회원가입</button>
+</body>
+<script>
+    document.getElementById("registerButton").addEventListener("click", register)
+
+    function register(){
+        fetch("/users/register",{
+            method: "post",
+            headers:{"content-type":  "application/json"},
+            body: JSON.stringify({
+                userId: document.getElementById("userId").value,
+                userPassword: document.getElementById("userPassword").value,
+                passwordCheck: document.getElementById("passwordCheck").value,
+                phone: document.getElementById("phone").value,
+                email: document.getElementById("email").value,
+                address: document.getElementById("address").value
+            })
+        })
+            .then(function (response){
+                if(response.ok) {
+                    alert("회원가입 성공!")
+                    window.history.back()
+                }
+                else alert("회원가입 실패!")
+            })
+    }
+</script>
+</html>
