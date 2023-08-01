@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>물품 조회</title>
+</head>
+<body>
+<div>
+    <table border="1">
+        <tr>
+            <th>게시글번호</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>제안가격</th>
+            <th>상태</th>
+        </tr>
+        <tr th:each="item: ${items}">
+            <td>[[${item.getId()}]]</td>
+            <td><a th:href="@{/items/{itemId}(itemId = ${item.getId()})}">[[${item.getTitle()}]]</a></td>
+            <td>[[${item.getDescription()}]]</td>
+            <td>[[${item.getMinPriceWanted()}]]</td>
+            <td>[[${item.getStatus()}]]</td>
+        </tr>
+    </table>
+</div>
+</body>
+
+<script>
+</script>
+</html>

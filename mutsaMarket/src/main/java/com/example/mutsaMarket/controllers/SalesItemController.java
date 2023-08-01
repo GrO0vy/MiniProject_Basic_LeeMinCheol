@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 
 @Slf4j
@@ -38,11 +39,17 @@ public class SalesItemController {
 
     // 쿼리 파라미터를 전달하지 않으면 기본 값인 Integer.MAX_VALUE 를 페이지 크기로 전달하여 페이지 전체 조회
     @GetMapping
-    public Page<SalesItemDto> readAll(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                                      @RequestParam(value = "size", defaultValue = Integer.MAX_VALUE + "" ) Integer pageSize
+    public ModelAndView readAll(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                @RequestParam(value = "size", defaultValue = "10" ) Integer pageSize
                                       )
     {
-        return service.readItemAll(pageNumber, pageSize);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("items");
+        modelAndView.addObject("items", service.readItemAll(pageNumber,pageSize).getContent());
+
+        modelAndView.addObject("pageInfo", service.readItemAll(pageNumber,pageSize).getPageable());
+
+        return modelAndView;
     }
 
     @GetMapping({"/{itemId}"})
