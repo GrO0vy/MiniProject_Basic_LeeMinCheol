@@ -16,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
@@ -52,7 +55,10 @@ public class UserController {
                                 @NotBlank @RequestParam("inputPw") String inputPw){
         String token = userService.login(inputId, inputPw);
 
-        return ResponseEntity.ok(token);
+        Map<String, String> result = new HashMap<>();
+        result.put("token", token);
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/get-info")
