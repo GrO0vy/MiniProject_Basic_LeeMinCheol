@@ -6,6 +6,8 @@
 
 ## 회원가입
 URL : `POST /users/register`
+
+```json
 {
     "userId": "lmc2819",
     "userPassword": "123",
@@ -14,6 +16,7 @@ URL : `POST /users/register`
     "email": "lmc@naver.com",
     "address": "인천광역시"
 }
+```
 
 회원가입을 하는 URL 요청
 - userId, userPassword, passwordCheck 를 필수적으로 입력받도록한다.
