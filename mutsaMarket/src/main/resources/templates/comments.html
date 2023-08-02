@@ -12,7 +12,7 @@
         <th>답글</th>
     </tr>
     <tr th:each="comment : ${comments}">
-        <td></td>
+        <td>[[${comment.userId}]]</td>
         <td>[[${comment.content}]]</td>
         <td>[[${comment.reply}]]</td>
     </tr>

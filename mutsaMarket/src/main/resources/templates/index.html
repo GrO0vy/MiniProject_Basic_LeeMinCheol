@@ -11,9 +11,13 @@
   <a href="/items"><button id = "view-items-button">전체 글 조회</button ></a>
 </body>
 <script>
+
     if(localStorage.getItem("token") != null){
-        document.getElementById("register-button").remove()
-        document.getElementById("login-button").remove()
+        document.getElementById("register-button").hidden = true
+        document.getElementById("login-button").hidden = true
+    }
+    else{
+        document.getElementById("write-article-button").hidden = true
     }
 </script>
 </html>

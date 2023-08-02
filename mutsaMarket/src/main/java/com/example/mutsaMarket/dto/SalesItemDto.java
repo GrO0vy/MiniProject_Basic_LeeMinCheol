@@ -13,6 +13,7 @@ public class SalesItemDto {
     private String imageUrl;
     private Integer minPriceWanted;
     private String status;
+    private String userId;
 
     public static SalesItemDto fromEntity(SalesItemEntity entity){
         SalesItemDto salesItemDao = new SalesItemDto();
@@ -22,7 +23,7 @@ public class SalesItemDto {
         salesItemDao.setImageUrl(entity.getImageUrl());
         salesItemDao.setMinPriceWanted(entity.getMinPriceWanted());
         salesItemDao.setStatus(entity.getStatus());
-
+        salesItemDao.setUserId(entity.getUser().getUserId());
         return salesItemDao;
     }
 }
