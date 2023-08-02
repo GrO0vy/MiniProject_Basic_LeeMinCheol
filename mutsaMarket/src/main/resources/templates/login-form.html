@@ -24,7 +24,7 @@
                     .then(function(body){
                         localStorage.setItem("token", body.token)
                         alert("로그인 성공!")
-                        window.history.back();
+                        location.href = "/";
                     })
                 else alert("회원정보 오류")
             })
