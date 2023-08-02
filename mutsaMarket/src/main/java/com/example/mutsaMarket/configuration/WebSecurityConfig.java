@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                 authHttp -> authHttp
                         .requestMatchers(
                                 "/items","/items/{itemId}",
-                                "/items/{itemId}/comments/{commentId}","/")
+                                "/items/{itemId}/comments","/")
                         .permitAll()
                         .requestMatchers("/users/register", "/users/login",
                                 "/form/**")

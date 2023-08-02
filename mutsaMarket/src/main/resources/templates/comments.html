@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>댓글</title>
+</head>
+<body>
+<table border = "1">
+    <tr>
+        <th>작성자</th>
+        <th>내용</th>
+        <th>답글</th>
+    </tr>
+    <tr th:each="comment : ${comments}">
+        <td></td>
+        <td>[[${comment.content}]]</td>
+        <td>[[${comment.reply}]]</td>
+    </tr>
+</table>
+</body>
+</html>

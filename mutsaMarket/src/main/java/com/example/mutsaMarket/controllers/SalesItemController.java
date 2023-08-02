@@ -45,16 +45,21 @@ public class SalesItemController {
     {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("items");
-        modelAndView.addObject("items", service.readItemAll(pageNumber,pageSize).getContent());
 
-        modelAndView.addObject("pageInfo", service.readItemAll(pageNumber,pageSize).getPageable());
+        Page<SalesItemDto> page = service.readItemAll(pageNumber,pageSize);
+        modelAndView.addObject("items", page.getContent());
+        modelAndView.addObject("pageInfo", page.getPageable());
 
         return modelAndView;
     }
 
     @GetMapping({"/{itemId}"})
-    public SalesItemDto readOne(@PathVariable("itemId") Integer itemId){
-        return service.readItemById(itemId);
+    public ModelAndView readOne(@PathVariable("itemId") Integer itemId){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("item-details");
+        modelAndView.addObject("item", service.readItemById(itemId));
+
+        return modelAndView;
     }
 
     @PutMapping("/{itemId}")

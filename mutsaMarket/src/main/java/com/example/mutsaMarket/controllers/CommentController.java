@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,11 +38,18 @@ public class CommentController {
     }
 
     @GetMapping
-    public Page<CommentDto> readAll(@PathVariable("itemId") Integer itemId,
-                                    @RequestParam(value= "page", defaultValue = "0") Integer pageNumber,
-                                    @RequestParam(value= "size", defaultValue = "25") Integer pageSize)
+    public ModelAndView readAll(@PathVariable("itemId") Integer itemId,
+                                @RequestParam(value= "page", defaultValue = "0") Integer pageNumber,
+                                @RequestParam(value= "size", defaultValue = "10") Integer pageSize)
     {
-        return service.readCommentAll(itemId,pageNumber,pageSize);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("comments");
+
+        Page<CommentDto> page = service.readCommentAll(itemId,pageNumber,pageSize);
+        modelAndView.addObject("comments", page.getContent());
+        modelAndView.addObject("pageInfo", page.getPageable());
+
+        return modelAndView;
     }
 
     @PutMapping("/{commentId}")

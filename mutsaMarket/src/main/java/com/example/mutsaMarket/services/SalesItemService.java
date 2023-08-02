@@ -69,14 +69,7 @@ public class SalesItemService {
         if (optionalEntity.isPresent()) {
             SalesItemEntity entity = optionalEntity.get();
 
-            SalesItemDto salesItemDto = new SalesItemDto();
-            salesItemDto.setTitle(entity.getTitle());
-            salesItemDto.setDescription(entity.getDescription());
-            salesItemDto.setImageUrl(entity.getImageUrl());
-            salesItemDto.setMinPriceWanted(entity.getMinPriceWanted());
-            salesItemDto.setStatus(entity.getStatus());
-
-            return salesItemDto;
+            return SalesItemDto.fromEntity(entity);
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
