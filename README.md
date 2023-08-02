@@ -46,6 +46,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 회원가입 폼을 통해서도 회원가입이 가능하도록 UI 구현
 - URL : `GET /form/register-form`
 - 회원가입 버튼 클릭시 회원가입 요청을 보냄
+  
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/07cd09f2-86e3-464f-9f14-bbf02c5383b6)
 
 
@@ -53,6 +54,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 로그인 폼을 통해서도 로그인이 가능하도록 UI 구현
 - URL : `GET /form/login-form`
 - 로그인 버튼 클릭시 로그인 요청을 보냄
+  
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/eb05a1a0-c08e-445e-a16c-1a01dd47a71f)
 
 
@@ -60,6 +62,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 글 쓰기 폼을 통해서 글을 작성할 수 있도록 UI 구현
 - URL : `GET /form/writing-article-form`
 - 작성완료 버튼 클릭시 글 등록 요청을 보냄
+  
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/a34f53f1-68d8-4b14-9574-be961afa5fd5)
 
 
@@ -67,6 +70,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 전체 글 조회 UI 구현
 - URL : `GET /items`
 - 메인 화면에서 전체 글 보기 버튼 클릭 시 조회 가능
+
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/95a41bf6-6ec2-40ea-886d-d1eb6501eea5)
 
 
@@ -74,6 +78,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 글 상세보기 UI 구현
 - URL : `GET /items/{itemId}`
 - 전체 글 조회에서 조회하고 싶은 글의 제목을 클릭하면 상세보기 가능
+
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/96317279-42f3-4d00-9688-6c71dc960b34)
 
 
@@ -81,6 +86,7 @@ URL : `POST /users/login?inputId= & inputPw= `
 ### 글에 대한 댓글 조회 UI 구현
 - URL : `GET /items/{itemId}/comments`
 - 글 상세페이지에서 댓글 보기 버튼을 클릭 시 해당 글에 대한 댓글을 조회할 수 있음
+  
 ![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/fc14aa0d-d0ef-4bee-bbbe-7fc6897e6e55)
 
 
