@@ -4,6 +4,95 @@
 
 사용자가 중고 물품을 자유롭게 올리고, 댓글을 통해 소통하며, 최종적으로 구매 제안에 대하여 수락할 수 있는 형태의 중고 거래 플랫폼의 백엔드를 만드는 프로젝트입니다.
 
+## 회원가입
+URL : `POST /users/register`
+{
+    "userId": "lmc2819",
+    "userPassword": "123",
+    "passwordCheck": "123",
+    "phone": "010-1111-2222",
+    "email": "lmc@naver.com",
+    "address": "인천광역시"
+}
+
+회원가입을 하는 URL 요청
+- userId, userPassword, passwordCheck 를 필수적으로 입력받도록한다.
+- 패스워드와 패스워드 확인이 다르면 회원가입이 되지 않도록한다.
+- 아이디가 중복된 유저가 있으면 회원가입이 되지 않도록한다.
+
+
+## 로그인
+URL : `POST /users/login?inputId= & inputPw= `
+
+로그인을 하는 URL 요청
+- 로그인 성공 시 jwt 발급
+- 로그인 성공 시 로그인을 유지하기 위해서 jwt 를 로컬 스토리지에 저장
+
+
+## UI 구현
+
+### 메인 UI 구현
+- URL `GET localhost:8080`
+- 로그인이 안된 상태라면 회원가입, 로그인 게시글 조회가 가능하도록 설정
+- 로그인이 된 상태라면 글쓰기, 게시글 조회가 가능하도록 설정
+
+  
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/0bf5e4fb-6503-4f92-b981-e542d135ba32)
+
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/d8f37275-6166-4b90-b104-1fc27fd8389a)
+
+  
+
+### 회원가입 폼을 통해서도 회원가입이 가능하도록 UI 구현
+- URL : `GET /form/register-form`
+- 회원가입 버튼 클릭시 회원가입 요청을 보냄
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/07cd09f2-86e3-464f-9f14-bbf02c5383b6)
+
+
+
+### 로그인 폼을 통해서도 로그인이 가능하도록 UI 구현
+- URL : `GET /form/login-form`
+- 로그인 버튼 클릭시 로그인 요청을 보냄
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/eb05a1a0-c08e-445e-a16c-1a01dd47a71f)
+
+
+
+### 글 쓰기 폼을 통해서 글을 작성할 수 있도록 UI 구현
+- URL : `GET /form/writing-article-form`
+- 작성완료 버튼 클릭시 글 등록 요청을 보냄
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/a34f53f1-68d8-4b14-9574-be961afa5fd5)
+
+
+
+### 전체 글 조회 UI 구현
+- URL : `GET /items`
+- 메인 화면에서 전체 글 보기 버튼 클릭 시 조회 가능
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/95a41bf6-6ec2-40ea-886d-d1eb6501eea5)
+
+
+
+### 글 상세보기 UI 구현
+- URL : `GET /items/{itemId}`
+- 전체 글 조회에서 조회하고 싶은 글의 제목을 클릭하면 상세보기 가능
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/96317279-42f3-4d00-9688-6c71dc960b34)
+
+
+
+### 글에 대한 댓글 조회 UI 구현
+- URL : `GET /items/{itemId}/comments`
+- 글 상세페이지에서 댓글 보기 버튼을 클릭 시 해당 글에 대한 댓글을 조회할 수 있음
+![image](https://github.com/likelion-backend-5th/Project_1_LeeMinCheol/assets/89755903/fc14aa0d-d0ef-4bee-bbbe-7fc6897e6e55)
+
+
+
+## 권한 설정
+- 게시글 조회, 댓글 조회는 누구나 접근 가능하도록 설정
+- 회원가입, 로그인은 인증되지 않은 사용자만 접근 가능하도록 설정
+- 나머지 요청은 인증된 사용자만 접근 가능하도록 설정
+- 특히 게시물/댓글/제안 에 대한 수정, 삭제에 대한 요청은 인증된 사용자 중 해당 엔티티의 작성자만이 요청에 대한 접근이 가능하도록 설정정
+
+
+
 ## 물품 관리
 
 ### ● CREATE
@@ -15,8 +104,6 @@ URL : `POST /items`
     "title": "중고 노트북 팝니다",
     "description": "20129년 맥북 프로 13인치 모델입니다",
     "minPriceWanted": 1000000,
-    "writer": "lee.dev",
-    "password": "1qaz2wsx"
   }
   ```
   물품을 등록하는 URL 요청
@@ -24,6 +111,7 @@ URL : `POST /items`
   - 물품이 등록되면 물품의 상태는 판매중 상태가 되어야한다.
   - 이미지 등록은 물품 등록과 동시에 이루어질수 없다.
   - 필수 항목이 입력되지 않으면 오류 메세지를 띄운다.
+  - 로그인 된 사용자만 물품을 등록할 수 있도록한다.
 
 
   ※ 등록 성공 시 결과 ( ResponseBody )
@@ -47,7 +135,7 @@ URL : `GET /items?page=1 & size=1`
  
   등록된 물품을 조회하는 URL 요청
   - 페이지 번호와 한 페이지의 크기를 입력해서 해당 페이지의 물품들을 조회 할 수 있다.
-  - 쿼리 파라미터를 전달하지 않으면 페이지 번호는 0, 페이지 크기는 Integer.MAX_VALUE 가 전달되어 전체 물품을 조회한다.
+  - 쿼리 파라미터를 전달하지 않으면 페이지 번호는 0, 페이지 크기는 10이 전달되어 전체 물품을 조회한다.
 
 
   ※ 페이지 조회 시 결과 ( ResponseBody )
@@ -184,14 +272,11 @@ URL : `PUT /items/{itemId}`
   {
     "title": "중고 노트북 팝니다",
     "description": "2019년 맥북 프로 13인치 모델입니다",
-    "minPriceWanted": 1000000,
-    "writer": "lee.dev",
-    "password": "1qaz2wsx"
+    "minPriceWanted": 1000000
   }
   ```
   등록된 물품정보를 수정하는 URL 요청
   - 제목, 설명, 최소 가격을 물품을 등록한 작성자만 수정할 수 있도록한다.
-  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
   - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
 
 
@@ -249,16 +334,9 @@ URL : `PUT /items/{itemId}/images`
 ### ● DELETE
 URL : `DELETE /items/{itemId}`
 
-  #### ResquestBody
-  ```json
-  {
-    "writer": "lee.dev",
-    "password": "1qaz2wsx"
-  }
-  ```
+
   등록된 물품을 삭제하는 URL 요청
   - 물품을 등록한 작성자만 삭제할 수 있도록한다.
-  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
   - 해당 글에 달린 모든 댓글을 삭제한다.
   - 해당 물품의 이미지와 이미지 디렉토리를 삭제한다.
   - 해당 물품에 등록된 모든 구매제안을 삭제한다.
@@ -301,7 +379,6 @@ URL : `POST items/{itemId}/comments`
   ```
   댓글을 등록하는 URL 요청
   - 등록된 물품에 대해서만 댓글을 달 수 있다.
-  - 댓글을 입력할 때는 반드시 내용, 작성자, 비밀번호를 입력해야한다.
   - 하나의 물품에 여러 댓글이 달릴 수 있다.
 
 
@@ -326,11 +403,11 @@ URL : `POST items/{itemId}/comments`
 
 
 ### ● READ
-URL : `GET items/{itemId}/comments?page=0&size=3`
+URL : `GET items/{itemId}/comments?page=0&size=10`
 
   댓글을 조회하는 URL 요청
   - 등록된 물품에 달린 댓글을 조회 할 수 있고 모든 사용자가 조회 가능하다.
-  - 페이지 번호와 크기를 전달해주지 않으면 기본적으로 하나의 페이지에 25개의 댓글을 보여주고 0번째 페이지를 보여준다.
+  - 페이지 번호와 크기를 전달해주지 않으면 기본적으로 하나의 페이지에 10개의 댓글을 보여주고 0번째 페이지를 보여준다.
   
 
   ※ 댓글 조회 성공 시 결과 ( ResponseBody )
@@ -385,8 +462,6 @@ URL : `PUT items/{itemId}/comments/{commentId}`
   #### ResquestBody
   ```json
   {
-    "writer": "jeeho.edu",
-    "password": "qwerty1234",
     "content": "할인 가능하신가요? 1000000 정도면 고려 가능합니다"
   } 
   ```
@@ -421,8 +496,6 @@ URL : `PUT items/{itemId}/comments/{commentId}`
   #### ResquestBody
   ```json
   {
-    "writer": "lee.dev",
-    "password": "1qaz2wsx",
     "reply": "안됩니다."
   }
   ```
@@ -472,19 +545,10 @@ URL : `PUT items/{itemId}/comments/{commentId}`
 
 ### ● DELETE
 URL : `DELETE /items/{itemId}/comment/{commentId}`
-  
-  #### ResquestBody
-  ```json
-  {
-    "writer": "jeeho.edu",
-    "password": "qwerty1234"
-  }
-  ```
 
 
   등록된 댓글을 삭제하는 URL 요청
   - 댓글을 등록한 작성자만 삭제할 수 있도록한다.
-  - 작성자와 비밀번호를 입력해서 수정 요청을 보내는 사용자가 작성자가 맞는지 확인한다.
   - 작성자 정보가 일치하지 않으면 400 에러를 띄운다.
   - 없는 댓글을 삭제하려고 하는 경우 404 에러를 띄운다.
 
@@ -532,14 +596,11 @@ URL : `POST items/{itemId}/proposal`
   #### ResquestBody
   ```json
   {
-    "writer": "jeeho.edu",
-    "password": "qwerty1234",
     "suggestedPrice": 1000000
   }
   ```
   구메 제안을 등록하는 URL 요청
   - 등록된 물품에 대해서만 구매 제안을 요청할 수 있다.
-  - 등록할 때는 반드시 제안 금액, 작성자, 비밀번호를 입력해야한다.
   - 하나의 물품에 여러 구매 제안이 등록 될 수 있다.
 
 
@@ -631,8 +692,6 @@ URL : `PUT items/{itemId}/proposals/{proposalId}`
    #### ResquestBody
   ```json
   {
-    "writer": "lee.dev",
-    "password": "1qaz2wsx",
     "status": "수락"
   }
   ```
@@ -648,8 +707,6 @@ URL : `PUT items/{itemId}/proposals/{proposalId}`
    #### ResquestBody
   ```json
    {
-    "writer": "jeeho.edu",
-    "password": "qwerty1234",
     "status": "확정"
   }
   ```
@@ -715,14 +772,6 @@ URL : `PUT items/{itemId}/proposals/{proposalId}`
   
 ### ● DELETE
 URL : `DELETE /items/{itemId}/proposals/{proposalId}`
-  
-  #### ResquestBody
-  ```json
-  {
-    "writer": "jeeho.edu",
-    "password": "qwerty1234"
-  }
-  ```
 
 
   등록된 구매 제안을 삭제하는 URL 요청
