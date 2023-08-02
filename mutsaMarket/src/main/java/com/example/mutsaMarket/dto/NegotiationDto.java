@@ -11,6 +11,7 @@ public class NegotiationDto {
     private Integer itemId;
     private Integer suggestedPrice;
     private String status;
+    private String userId;
 
     public static NegotiationDto fromEntity(NegotiationEntity entity){
         NegotiationDto negotiationDto = new NegotiationDto();
@@ -18,6 +19,7 @@ public class NegotiationDto {
         negotiationDto.setId(entity.getId());
         negotiationDto.setSuggestedPrice(entity.getSuggestedPrice());
         negotiationDto.setStatus(entity.getStatus());
+        negotiationDto.setUserId(entity.getUser().getUserId());
 
         return negotiationDto;
     }

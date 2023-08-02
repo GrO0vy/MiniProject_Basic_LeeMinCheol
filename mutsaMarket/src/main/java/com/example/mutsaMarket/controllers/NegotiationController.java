@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @Slf4j
@@ -38,13 +39,19 @@ public class NegotiationController {
     }
 
     @GetMapping
-    public Page<NegotiationDto> readAll(@PathVariable("itemId") Integer itemId,
-                                        @RequestParam(value = "page", defaultValue = "0") Integer page,
-                                        @RequestParam(value = "size", defaultValue = "2") Integer size,
-                                        Authentication authentication
+    public ModelAndView readAll(@PathVariable("itemId") Integer itemId,
+                                @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                Authentication authentication
     )
     {
-        return service.readNegotiationAll(itemId, page, size, getLoginUser(authentication));
+        Page<NegotiationDto> page = service.readNegotiationAll(itemId, pageNumber, size, getLoginUser(authentication));
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("negotiations");
+        modelAndView.addObject("negotiations", page.getContent());
+        modelAndView.addObject("pageInfo", page.getPageable());
+
+        return modelAndView;
     }
 
     @PutMapping("/{proposalId}")
