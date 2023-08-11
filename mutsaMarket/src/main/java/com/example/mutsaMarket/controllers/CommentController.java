@@ -93,4 +93,5 @@ public class CommentController {
         String user = ((UserDetails)authentication.getPrincipal()).getUsername();
         return (CustomUserDetails) (manager.loadUserByUsername(user));
     }
+
 }
